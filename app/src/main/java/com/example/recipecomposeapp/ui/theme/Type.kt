@@ -9,7 +9,6 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,23 +18,26 @@ import androidx.compose.ui.unit.sp
 val recipeAppTypography = Typography(
     displayLarge = TextStyle(
         fontFamily = montserratAlternatesFontFamily,
-        fontWeight = FontWeight.Black
-    ),
-    labelLarge = TextStyle(
-        fontFamily = montserratAlternatesFontFamily,
-        fontWeight = FontWeight.W100
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 20.sp
     ),
     titleMedium = TextStyle(
         fontFamily = montserratAlternatesFontFamily,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = montserratFontFamily,
-        fontWeight = FontWeight.SemiBold
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp
     ),
     bodySmall = TextStyle(
         fontFamily = montserratFontFamily,
         fontWeight = FontWeight.Light
+    ),
+    labelLarge = TextStyle(
+        fontFamily = montserratFontFamily,
+        fontSize = 16.sp
     )
 )
 
