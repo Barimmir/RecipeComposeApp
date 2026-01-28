@@ -11,13 +11,11 @@ val montserratFontFamily =
         listOf(
             Font(
                 resId = R.font.montserrat_italic_variablefont_wght,
-                weight = FontWeight.Normal,
-                style = FontStyle.Normal
+                weight = FontWeight.Normal
             ),
             Font(
                 resId = R.font.montserrat_variablefont_wght,
-                weight = FontWeight.Normal,
-                style = FontStyle.Normal
+                weight = FontWeight.Normal
             )
         )
     )
@@ -25,93 +23,80 @@ val montserratAlternatesFontFamily = FontFamily(
     listOf(
         Font(
             resId = R.font.montserrat_alternates_bold,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Bold,
         ),
         Font(
             resId = R.font.montserrat_alternates_thin,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Thin,
         ),
         Font(
             resId = R.font.montserrat_alternates_black,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Black,
         ),
         Font(
             resId = R.font.montserrat_alternates_italic,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            style = FontStyle.Italic
         ),
         Font(
             resId = R.font.montserrat_alternates_light,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Light,
         ),
         Font(
             resId = R.font.montserrat_alternates_medium,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Medium,
         ),
         Font(
             resId = R.font.montserrat_alternates_regular,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
         ),
         Font(
             resId = R.font.montserrat_alternates_semi_bold,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.SemiBold,
         ),
         Font(
             resId = R.font.montserrat_alternates_thin_italic,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Thin,
+            style = FontStyle.Italic
         ),
         Font(
             resId = R.font.montserrat_alternates_medium_italic,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Medium,
+            style = FontStyle.Italic
         ),
         Font(
             resId = R.font.montserrat_alternates_semi_bold_italic,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.SemiBold,
+            style = FontStyle.Italic
         ),
         Font(
             resId = R.font.montserrat_alternates_light_italic,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Light,
+            style = FontStyle.Italic
         ),
         Font(
             resId = R.font.montserrat_alternates_extra_light,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.ExtraLight,
         ),
         Font(
             resId = R.font.montserrat_alternates_extra_bold_italic,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.ExtraBold,
+            style = FontStyle.Italic
         ),
         Font(
             resId = R.font.montserrat_alternates_bold_italic,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Bold,
+            style = FontStyle.Italic
         ),
         Font(
             resId = R.font.montserrat_alternates_black_italic,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            weight = FontWeight.Black,
+            style = FontStyle.Italic
         ),
         Font(
             resId = R.font.montserrat_italic_variablefont_wght,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
+            style = FontStyle.Italic
         ),
         Font(
             resId = R.font.montserrat_variablefont_wght,
-            weight = FontWeight.Normal,
-            style = FontStyle.Normal
         )
     )
 )
