@@ -52,7 +52,7 @@ fun RecipeComposeAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = recipeAppTypography,
         content = content
     )
 }
