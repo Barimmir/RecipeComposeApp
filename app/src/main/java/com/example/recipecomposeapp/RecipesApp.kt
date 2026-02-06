@@ -17,6 +17,7 @@ import com.example.recipecomposeapp.ui.theme.categories.CategoriesScreen
 import com.example.recipecomposeapp.ui.theme.favorites.FavoritesScreen
 import com.example.recipecomposeapp.ui.theme.navigation.BottomNavigation
 import com.example.recipecomposeapp.ui.theme.navigation.ScreenId
+import com.example.recipecomposeapp.ui.theme.recipes.RecipesScreen
 
 @Composable
 fun RecipesApp() {
@@ -33,6 +34,9 @@ fun RecipesApp() {
                 onFavoriteClick = {
                     currentScreen = ScreenId.FAVORITES
                 },
+                onRecipesClick = {
+                    currentScreen = ScreenId.RECIPES
+                },
             )
         }
     ) { paddingValues ->
@@ -44,6 +48,7 @@ fun RecipesApp() {
             when (currentScreen) {
                 ScreenId.CATEGORIES -> CategoriesScreen()
                 ScreenId.FAVORITES -> FavoritesScreen()
+                ScreenId.RECIPES -> RecipesScreen()
             }
         }
     }
