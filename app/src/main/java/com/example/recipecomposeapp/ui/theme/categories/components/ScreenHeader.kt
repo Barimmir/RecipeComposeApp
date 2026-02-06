@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,18 +38,20 @@ fun ScreenHeader(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        Text(
-            text = title,
-            color = Color.Black,
-            fontSize = 28.sp,
+        Surface(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = 16.dp)
-                .background(
-                    color = Color.White.copy(alpha = 1.2f),
-                    shape = RoundedCornerShape(8.dp)
-                )
-        )
+                .padding(start = 16.dp, bottom = 16.dp),
+            color = Color.White.copy(alpha = 0.8f),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                text = title,
+                color = Color.Black,
+                fontSize = 28.sp
+            )
+        }
+
     }
 }
 

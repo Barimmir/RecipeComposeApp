@@ -8,9 +8,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.recipecomposeapp.ui.theme.categories.components.ScreenHeader
 
 @Composable
-fun CategoriesScreen() {
+fun CategoriesScreen(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize(),
     ) {
         ScreenHeader(
