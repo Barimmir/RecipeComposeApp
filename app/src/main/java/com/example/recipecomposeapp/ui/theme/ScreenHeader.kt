@@ -1,7 +1,6 @@
-package com.example.recipecomposeapp.ui.theme.categories.components
+package com.example.recipecomposeapp.ui.theme
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,7 +24,8 @@ import com.example.recipecomposeapp.R
 @Composable
 fun ScreenHeader(
     title: String,
-    onClick: () -> Unit
+    imagePainter: Painter,
+    contentDescription: String,
 ) {
     Box(
         modifier = Modifier
@@ -33,8 +34,8 @@ fun ScreenHeader(
         contentAlignment = Alignment.TopStart
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bcg_categories),
-            contentDescription = "Шапка категории",
+            painter = imagePainter,
+            contentDescription = contentDescription,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
@@ -58,5 +59,9 @@ fun ScreenHeader(
 @Preview
 @Composable
 fun ScreenHeaderPreview() {
-    ScreenHeader("Категории") { }
+    ScreenHeader(
+        "Категории",
+        imagePainter = painterResource(id = R.drawable.bcg_categories),
+        contentDescription = ""
+    )
 }

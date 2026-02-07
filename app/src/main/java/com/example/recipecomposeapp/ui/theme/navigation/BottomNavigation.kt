@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 fun BottomNavigation(
     onCategoriesClick: () -> Unit,
     onFavoriteClick: () -> Unit,
+    onRecipesClick: () -> Unit
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -21,6 +22,9 @@ fun BottomNavigation(
         }
         Button(onClick = onFavoriteClick) {
             Text("Избранные")
+        }
+        Button(onClick = onRecipesClick) {
+            Text("Рецепты")
         }
     }
 }

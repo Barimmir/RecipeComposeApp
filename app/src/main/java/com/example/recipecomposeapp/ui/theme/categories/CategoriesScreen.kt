@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.recipecomposeapp.ui.theme.categories.components.ScreenHeader
+import com.example.recipecomposeapp.R
+import com.example.recipecomposeapp.ui.theme.ScreenHeader
 
 @Composable
 fun CategoriesScreen(modifier: Modifier = Modifier) {
@@ -15,7 +17,8 @@ fun CategoriesScreen(modifier: Modifier = Modifier) {
     ) {
         ScreenHeader(
             "Категории",
-            onClick = {},
+            imagePainter = painterResource(id = R.drawable.bcg_categories),
+            contentDescription = "Шапка категорий"
         )
 
     }

@@ -1,4 +1,4 @@
-package com.example.recipecomposeapp.ui.theme.favorites
+package com.example.recipecomposeapp.ui.theme.recipes
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,21 +10,22 @@ import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.ui.theme.ScreenHeader
 
 @Composable
-fun FavoritesScreen(modifier: Modifier = Modifier) {
+fun RecipesScreen(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         ScreenHeader(
-            "Избранные",
-            imagePainter = painterResource(id = R.drawable.bcg_favorites),
-            contentDescription = "Шапка избранных"
+            "Скоро здесь будет список рецептов",
+            imagePainter = painterResource(id = R.drawable.bcg_categories),
+            contentDescription = "Шапка рецептов"
         )
+
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun FavoritesScreenPreview() {
-    FavoritesScreen()
+fun RecipesScreenPreview() {
+    RecipesScreen()
 }
