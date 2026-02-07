@@ -17,8 +17,8 @@ fun RecipesScreen(modifier: Modifier = Modifier) {
     ) {
         ScreenHeader(
             "Скоро здесь будет список рецептов",
-            onClick = {},
-            imagePainter = painterResource(id = R.drawable.bcg_categories)
+            imagePainter = painterResource(id = R.drawable.bcg_categories),
+            contentDescription = "Шапка рецептов"
         )
 
     }

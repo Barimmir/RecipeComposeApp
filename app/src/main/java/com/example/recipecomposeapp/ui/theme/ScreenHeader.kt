@@ -24,8 +24,8 @@ import com.example.recipecomposeapp.R
 @Composable
 fun ScreenHeader(
     title: String,
-    onClick: () -> Unit,
     imagePainter: Painter,
+    contentDescription: String,
 ) {
     Box(
         modifier = Modifier
@@ -35,7 +35,7 @@ fun ScreenHeader(
     ) {
         Image(
             painter = imagePainter,
-            contentDescription = "Шапка категории",
+            contentDescription = contentDescription,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
@@ -61,7 +61,7 @@ fun ScreenHeader(
 fun ScreenHeaderPreview() {
     ScreenHeader(
         "Категории",
-        onClick = {},
-        imagePainter = painterResource(id = R.drawable.bcg_categories)
+        imagePainter = painterResource(id = R.drawable.bcg_categories),
+        contentDescription = ""
     )
 }

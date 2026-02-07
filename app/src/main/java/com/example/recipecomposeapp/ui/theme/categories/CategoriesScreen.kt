@@ -17,8 +17,8 @@ fun CategoriesScreen(modifier: Modifier = Modifier) {
     ) {
         ScreenHeader(
             "Категории",
-            onClick = {},
-            imagePainter = painterResource(id = R.drawable.bcg_categories)
+            imagePainter = painterResource(id = R.drawable.bcg_categories),
+            contentDescription = "Шапка категорий"
         )
 
     }
