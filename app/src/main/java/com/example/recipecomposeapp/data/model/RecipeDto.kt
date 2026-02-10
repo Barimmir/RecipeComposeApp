@@ -5,5 +5,5 @@ data class RecipeDto(
     val title: String,
     val ingredients: List<IngredientDto>,
     val method: String,
-    val imageURL: String,
+    val imageUrl: String,
 )
