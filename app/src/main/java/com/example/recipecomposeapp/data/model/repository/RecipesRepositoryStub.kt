@@ -4,7 +4,7 @@ import com.example.recipecomposeapp.data.model.CategoryDto
 import com.example.recipecomposeapp.data.model.IngredientDto
 import com.example.recipecomposeapp.data.model.RecipeDto
 
-class RecipesRepositoryStub {
+object RecipesRepositoryStub {
     private val categoryList = listOf(
         CategoryDto(
             0,
@@ -144,8 +144,8 @@ class RecipesRepositoryStub {
         return categoryList
     }
 
-    fun getRecipesByCategoryId(categoryId: Int) {
-        when (categoryId) {
+    fun getRecipesByCategoryId(categoryId: Int): List<RecipeDto> {
+        return when (categoryId) {
             0 -> burgerRecipesList
             else -> emptyList()
         }
