@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,16 +44,15 @@ fun ScreenHeader(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(start = 16.dp, bottom = 16.dp),
-            color = Color.White.copy(alpha = 0.8f),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
                 text = title,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 28.sp
             )
         }
-
     }
 }
 

@@ -14,7 +14,7 @@ data class RecipeDto(
 fun RecipeDto.toUiModel() = RecipeUiModel(
     id = id,
     title = title,
-    ingredients = ingredients,
+    ingredients = ingredients.map { it.toUiModel() },
     imageUrl = if (imageUrl.startsWith("http")) imageUrl else Constants.ASSETS_URI_PREFIX + imageUrl,
     method = method,
     isFavorite = false
