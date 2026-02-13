@@ -1,7 +1,6 @@
 package com.example.recipecomposeapp.ui.theme.recipes.model
 
 import androidx.compose.runtime.Immutable
-import com.example.recipecomposeapp.data.model.IngredientDto
 
 @Immutable
 data class RecipeUiModel(
