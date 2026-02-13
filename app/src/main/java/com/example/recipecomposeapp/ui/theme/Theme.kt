@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryColorDark,
+    onPrimary = TextPrimaryColorDark,
     secondary = AccentColorDark,
     tertiary = AccentBlueDark,
     tertiaryContainer = SliderTrackColorDark,
@@ -16,11 +17,14 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = SurfaceVariantColorDark,
     outline = DividerColorDark,
     onSurface = TextPrimaryColorDark,
-    onSurfaceVariant = TextSecondaryColorDark
+    onSurfaceVariant = TextSecondaryColorDark,
+    primaryContainer = SurfaceColorDark,
+    onPrimaryContainer = TextPrimaryColorDark
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryColor,
+    onPrimary = TextPrimaryColor,
     secondary = AccentColor,
     tertiary = AccentBlue,
     tertiaryContainer = SliderTrackColor,
@@ -29,17 +33,9 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = SurfaceVariantColor,
     outline = DividerColor,
     onSurface = TextPrimaryColor,
-    onSurfaceVariant = TextSecondaryColor
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    onSurfaceVariant = TextSecondaryColor,
+    primaryContainer = SurfaceColor,
+    onPrimaryContainer = TextPrimaryColor
 )
 
 @Composable

@@ -24,36 +24,37 @@ fun RecipesApp() {
     var currentScreen by remember {
         mutableStateOf(ScreenId.CATEGORIES)
     }
-
-    Scaffold(
-        bottomBar = {
-            BottomNavigation(
-                onCategoriesClick = {
-                    currentScreen = ScreenId.CATEGORIES
-                },
-                onFavoriteClick = {
-                    currentScreen = ScreenId.FAVORITES
-                },
-                onRecipesClick = {
-                    currentScreen = ScreenId.RECIPES
-                },
-            )
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when (currentScreen) {
-                ScreenId.CATEGORIES -> CategoriesScreen()
-                ScreenId.FAVORITES -> FavoritesScreen()
-                ScreenId.RECIPES -> RecipesScreen()
+    RecipeComposeAppTheme {
+        Scaffold(
+            bottomBar = {
+                BottomNavigation(
+                    onCategoriesClick = {
+                        currentScreen = ScreenId.CATEGORIES
+                    },
+                    onFavoriteClick = {
+                        currentScreen = ScreenId.FAVORITES
+                    },
+                    onRecipesClick = {
+                        currentScreen = ScreenId.RECIPES
+                    },
+                )
+            }
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                when (currentScreen) {
+                    ScreenId.CATEGORIES -> CategoriesScreen()
+                    ScreenId.FAVORITES -> FavoritesScreen()
+                    ScreenId.RECIPES -> RecipesScreen()
+                }
             }
         }
+
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
