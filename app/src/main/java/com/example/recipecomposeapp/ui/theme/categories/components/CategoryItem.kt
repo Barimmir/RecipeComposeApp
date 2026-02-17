@@ -47,19 +47,20 @@ fun CategoryItem(
             Text(
                 text = title,
                 color = Color.Black,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = descriptionCategory,
                 color = Color.Black,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.fillMaxWidth()
             )
         }
 
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
