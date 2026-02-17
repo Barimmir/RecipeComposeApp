@@ -24,6 +24,5 @@ class CategoriesViewModel : ViewModel() {
             }
             _categories.value = categoriesList
         }
-
     }
 }
