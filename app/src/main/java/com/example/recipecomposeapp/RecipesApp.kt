@@ -29,9 +29,9 @@ fun RecipesApp() {
     RecipeComposeAppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.surface,
 
-        ) {
+            ) {
             Scaffold(
                 bottomBar = {
                     BottomNavigation(
@@ -56,7 +56,6 @@ fun RecipesApp() {
                     }
                 }
             }
-
         }
     }
 }
