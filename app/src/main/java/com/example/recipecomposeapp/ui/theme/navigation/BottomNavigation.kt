@@ -11,13 +11,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 
 @Composable
 fun BottomNavigation(
     onCategoriesClick: () -> Unit,
     onFavoriteClick: () -> Unit,
-    onRecipesClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -31,40 +34,39 @@ fun BottomNavigation(
             modifier = Modifier.weight(1f),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                contentColor = MaterialTheme.colorScheme.surface
             )
         ) {
-            Text("Категории")
+            Text(
+                "Категории",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displayLarge
+            )
         }
         Button(
             onClick = onFavoriteClick,
             modifier = Modifier.weight(1f),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = Color.Red,
+                contentColor = MaterialTheme.colorScheme.surface
             )
         ) {
-            Text("Избранные")
-        }
-        Button(
-            onClick = onRecipesClick,
-            modifier = Modifier.weight(1f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+            Text(
+                "Избранные",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displayLarge
             )
-        ) {
-            Text("Рецепты")
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun BottomNavigationPreview() {
-    BottomNavigation(
-        onCategoriesClick = {},
-        onFavoriteClick = {},
-        onRecipesClick = {}
-    )
+    RecipeComposeAppTheme {
+        BottomNavigation(
+            onCategoriesClick = {},
+            onFavoriteClick = {},
+        )
+    }
 }
