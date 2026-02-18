@@ -21,9 +21,14 @@ import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.ScreenHeader
 import com.example.recipecomposeapp.ui.theme.categories.components.CategoryItem
 import com.example.recipecomposeapp.ui.theme.categories.model.CategoriesViewModel
+import com.example.recipecomposeapp.ui.theme.categories.model.CategoryUiModel
 
 @Composable
-fun CategoriesScreen(modifier: Modifier = Modifier, viewModel: CategoriesViewModel) {
+fun CategoriesScreen(
+    modifier: Modifier = Modifier,
+    viewModel: CategoriesViewModel,
+    onCategoryClick: (CategoryUiModel) -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -44,13 +49,12 @@ fun CategoriesScreen(modifier: Modifier = Modifier, viewModel: CategoriesViewMod
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(categories) { categories ->
+            items(categories, key = { it.id }) { categories ->
                 CategoryItem(
-                    id = categories.id,
                     title = categories.title,
                     descriptionCategory = categories.description,
                     imageUrl = categories.imageUrl,
-                    onClick = {},
+                    onClick = { onCategoryClick(categories) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -62,6 +66,10 @@ fun CategoriesScreen(modifier: Modifier = Modifier, viewModel: CategoriesViewMod
 @Composable
 fun CategoriesScreenPreview() {
     RecipeComposeAppTheme {
-        CategoriesScreen(viewModel = CategoriesViewModel())
+        CategoriesScreen(
+            viewModel = CategoriesViewModel(),
+            modifier = Modifier,
+            onCategoryClick = {}
+        )
     }
 }

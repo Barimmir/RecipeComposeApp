@@ -16,19 +16,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.example.recipecomposeapp.Dimens
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
+import com.example.recipecomposeapp.ui.theme.categories.model.CategoryUiModel
 
 @Composable
 fun CategoryItem(
-    id: Int,
     title: String,
     descriptionCategory: String,
     imageUrl: String,
-    onClick: () -> Unit,
+    onClick: (CategoryUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background),
         shape = RoundedCornerShape(8.dp)
@@ -42,7 +43,7 @@ fun CategoryItem(
                 contentDescription = title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
+                    .height(Dimens.CATEGORY_IMAGE_HEIGHT),
                 contentScale = ContentScale.Crop
             )
             Text(
@@ -69,7 +70,6 @@ fun CategoryItemPreview() {
     RecipeComposeAppTheme {
         Column {
             CategoryItem(
-                id = 0,
                 title = "Бургеры",
                 descriptionCategory = "Рецепты всех популярных бургеров",
                 imageUrl = "file:///android_asset/burger.png",
