@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.example.recipecomposeapp.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.ScreenHeader
@@ -42,12 +42,12 @@ fun CategoriesScreen(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier
-                .weight(1f)
+                .weight(Dimens.WEIGHT_ONE_F)
                 .fillMaxWidth()
-                .padding(8.dp),
-            contentPadding = PaddingValues(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(Dimens.EIGHT_DP),
+            contentPadding = PaddingValues(Dimens.EIGHT_DP),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP),
+            verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
         ) {
             items(categories, key = { it.id }) { categories ->
                 CategoryItem(

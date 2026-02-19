@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.recipecomposeapp.Dimens
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 
 @Composable
@@ -31,7 +31,7 @@ fun BottomNavigation(
     ) {
         Button(
             onClick = onCategoriesClick,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(Dimens.WEIGHT_ONE_F),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.surface
@@ -45,7 +45,7 @@ fun BottomNavigation(
         }
         Button(
             onClick = onFavoriteClick,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(Dimens.WEIGHT_ONE_F),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Red,
                 contentColor = MaterialTheme.colorScheme.surface

@@ -50,7 +50,11 @@ fun RecipesApp() {
                         .padding(paddingValues)
                 ) {
                     when (currentScreen) {
-                        ScreenId.CATEGORIES -> CategoriesScreen(viewModel = CategoriesViewModel())
+                        ScreenId.CATEGORIES -> CategoriesScreen(
+                            viewModel = CategoriesViewModel(),
+                            modifier = Modifier,
+                            onCategoryClick = {})
+
                         ScreenId.FAVORITES -> FavoritesScreen()
                         ScreenId.RECIPES -> RecipesScreen()
                     }

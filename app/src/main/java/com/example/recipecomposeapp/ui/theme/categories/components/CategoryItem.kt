@@ -12,11 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.recipecomposeapp.Dimens
+import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.categories.model.CategoryUiModel
 
@@ -32,7 +33,7 @@ fun CategoryItem(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(Dimens.EIGHT_DP)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -44,7 +45,9 @@ fun CategoryItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Dimens.CATEGORY_IMAGE_HEIGHT),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                error = painterResource(R.drawable.ic_launcher_background)
             )
             Text(
                 text = title,
@@ -74,7 +77,7 @@ fun CategoryItemPreview() {
                 descriptionCategory = "Рецепты всех популярных бургеров",
                 imageUrl = "file:///android_asset/burger.png",
                 onClick = {},
-                modifier = Modifier.fillMaxWidth(0.5f)
+                modifier = Modifier.fillMaxWidth(Dimens.HALF_ONE_F)
             )
         }
     }
