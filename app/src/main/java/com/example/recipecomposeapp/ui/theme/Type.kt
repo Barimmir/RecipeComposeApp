@@ -14,7 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
 val recipeAppTypography = Typography(
     displayLarge = TextStyle(
         fontFamily = montserratAlternatesFontFamily,
@@ -47,22 +46,6 @@ val recipeAppTypography = Typography(
     )
 )
 
-/* Other default text styles to override
-titleLarge = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.Normal,
-    fontSize = 22.sp,
-    lineHeight = 28.sp,
-    letterSpacing = 0.sp
-),
-labelSmall = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.Medium,
-    fontSize = 11.sp,
-    lineHeight = 16.sp,
-    letterSpacing = 0.5.sp
-)
-*/
 @Preview(showBackground = true)
 @Composable
 fun TypographyPreview() {
