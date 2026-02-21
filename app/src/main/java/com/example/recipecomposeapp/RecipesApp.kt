@@ -16,16 +16,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.categories.CategoriesScreen
 import com.example.recipecomposeapp.ui.theme.categories.model.CategoriesViewModel
+import com.example.recipecomposeapp.ui.theme.categories.model.CategoryUiModel
 import com.example.recipecomposeapp.ui.theme.favorites.FavoritesScreen
 import com.example.recipecomposeapp.ui.theme.navigation.BottomNavigation
 import com.example.recipecomposeapp.ui.theme.navigation.ScreenId
 import com.example.recipecomposeapp.ui.theme.recipes.RecipesScreen
+import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeViewModel
 
 @Composable
 fun RecipesApp() {
     var currentScreen by remember {
         mutableStateOf(ScreenId.CATEGORIES)
     }
+    var selectedCategoryId by remember { mutableStateOf<Int?>(null) }
     RecipeComposeAppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -41,6 +44,9 @@ fun RecipesApp() {
                         onFavoriteClick = {
                             currentScreen = ScreenId.FAVORITES
                         },
+                        onRecipesClick = {
+                            currentScreen = ScreenId.RECIPES
+                        }
                     )
                 }
             ) { paddingValues ->
@@ -53,10 +59,17 @@ fun RecipesApp() {
                         ScreenId.CATEGORIES -> CategoriesScreen(
                             viewModel = CategoriesViewModel(),
                             modifier = Modifier,
-                            onCategoryClick = {})
+                            onCategoryClick = { category: CategoryUiModel ->
+                                selectedCategoryId = category.id
+                                currentScreen = ScreenId.RECIPES
+                            })
 
                         ScreenId.FAVORITES -> FavoritesScreen()
-                        ScreenId.RECIPES -> RecipesScreen()
+                        ScreenId.RECIPES -> RecipesScreen(
+                            categoryId = selectedCategoryId ?: error("Category ID is required"),
+                            modifier = Modifier,
+                            viewModel = RecipeViewModel()
+                        )
                     }
                 }
             }

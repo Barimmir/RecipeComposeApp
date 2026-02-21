@@ -51,6 +51,7 @@ fun CategoriesScreen(
         ) {
             items(categories, key = { it.id }) { categories ->
                 CategoryItem(
+                    id = categories.id,
                     title = categories.title,
                     descriptionCategory = categories.description,
                     imageUrl = categories.imageUrl,
