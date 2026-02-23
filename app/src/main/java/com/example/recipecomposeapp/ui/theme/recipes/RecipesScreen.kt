@@ -22,15 +22,14 @@ import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeViewModel
 
 @Composable
 fun RecipesScreen(
-    categoryId: Int,
+    categoryId: Int?,
     modifier: Modifier = Modifier,
-    viewModel: RecipeViewModel
+    viewModel: RecipeViewModel,
+    onRecipeClick: (Int) -> Unit
 ) {
     val recipes by viewModel.recipes.collectAsState()
     LaunchedEffect(categoryId) {
-        categoryId.let {
-            viewModel.loadRecipes(categoryId)
-        }
+        if (categoryId != null) viewModel.loadRecipes(categoryId) else println("ERROR")
     }
     val categoryTitle = when (categoryId) {
         0 -> "Бургеры"
@@ -62,7 +61,7 @@ fun RecipesScreen(
                     ingredients = recipe.ingredients,
                     method = recipe.method,
                     imageUrl = recipe.imageUrl,
-                    onRecipeClick = {}
+                    onRecipeClick = onRecipeClick
                 )
             }
         }
@@ -73,6 +72,9 @@ fun RecipesScreen(
 @Composable
 fun RecipesScreenPreview() {
     RecipeComposeAppTheme {
-        RecipesScreen(0, viewModel = RecipeViewModel())
+        RecipesScreen(
+            categoryId = 0,
+            viewModel = RecipeViewModel(),
+            onRecipeClick = {})
     }
 }

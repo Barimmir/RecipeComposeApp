@@ -45,7 +45,8 @@ fun RecipesApp() {
                             currentScreen = ScreenId.FAVORITES
                         },
                         onRecipesClick = {
-                            currentScreen = ScreenId.RECIPES
+                            if (selectedCategoryId != null) currentScreen =
+                                ScreenId.RECIPES else println("ERROR")
                         }
                     )
                 }
@@ -66,9 +67,11 @@ fun RecipesApp() {
 
                         ScreenId.FAVORITES -> FavoritesScreen()
                         ScreenId.RECIPES -> RecipesScreen(
-                            categoryId = selectedCategoryId ?: error("Category ID is required"),
+                            categoryId = selectedCategoryId,
                             modifier = Modifier,
-                            viewModel = RecipeViewModel()
+                            viewModel = RecipeViewModel(),
+                            onRecipeClick = {}
+
                         )
                     }
                 }

@@ -10,9 +10,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
+import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.recipes.model.IngredientUiModel
 
@@ -37,7 +39,9 @@ fun RecipeItem(
                 model = imageUrl,
                 contentDescription = title,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.img_placeholder),
+                error = painterResource(R.drawable.img_error)
             )
             Text(
                 text = title,
