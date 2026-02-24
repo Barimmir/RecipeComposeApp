@@ -7,28 +7,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
-import com.example.recipecomposeapp.ui.theme.categories.CategoriesScreen
-import com.example.recipecomposeapp.ui.theme.categories.model.CategoriesViewModel
-import com.example.recipecomposeapp.ui.theme.categories.model.CategoryUiModel
-import com.example.recipecomposeapp.ui.theme.favorites.FavoritesScreen
+import com.example.recipecomposeapp.ui.theme.navigation.AppNavigation
 import com.example.recipecomposeapp.ui.theme.navigation.BottomNavigation
-import com.example.recipecomposeapp.ui.theme.navigation.ScreenId
-import com.example.recipecomposeapp.ui.theme.recipes.RecipesScreen
-import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeViewModel
+import com.example.recipecomposeapp.ui.theme.navigation.Screen
 
 @Composable
 fun RecipesApp() {
-    var currentScreen by remember {
-        mutableStateOf(ScreenId.CATEGORIES)
-    }
-    var selectedCategoryId by remember { mutableStateOf<Int?>(null) }
+    val navController = rememberNavController()
     RecipeComposeAppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -39,14 +28,19 @@ fun RecipesApp() {
                 bottomBar = {
                     BottomNavigation(
                         onCategoriesClick = {
-                            currentScreen = ScreenId.CATEGORIES
+                            navController.navigate(Screen.Categories.route) {
+                                popUpTo(Screen.Categories.route) { inclusive = true }
+                            }
                         },
                         onFavoriteClick = {
-                            currentScreen = ScreenId.FAVORITES
+                            navController.navigate(Screen.Favorites.route) {
+                                popUpTo(Screen.Favorites.route) { inclusive = true }
+                            }
                         },
                         onRecipesClick = {
-                            if (selectedCategoryId != null) currentScreen =
-                                ScreenId.RECIPES else println("ERROR")
+                            navController.navigate(Screen.Recipes.route) {
+                                popUpTo(Screen.Recipes.route) { inclusive = true }
+                            }
                         }
                     )
                 }
@@ -56,24 +50,10 @@ fun RecipesApp() {
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    when (currentScreen) {
-                        ScreenId.CATEGORIES -> CategoriesScreen(
-                            viewModel = CategoriesViewModel(),
-                            modifier = Modifier,
-                            onCategoryClick = { category: CategoryUiModel ->
-                                selectedCategoryId = category.id
-                                currentScreen = ScreenId.RECIPES
-                            })
-
-                        ScreenId.FAVORITES -> FavoritesScreen()
-                        ScreenId.RECIPES -> RecipesScreen(
-                            categoryId = selectedCategoryId,
-                            modifier = Modifier,
-                            viewModel = RecipeViewModel(),
-                            onRecipeClick = {}
-
-                        )
-                    }
+                    AppNavigation(
+                        navController = navController,
+                        onRecipeClick = { recipeId -> }
+                    )
                 }
             }
         }
