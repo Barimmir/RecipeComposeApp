@@ -1,6 +1,7 @@
 package com.example.recipecomposeapp.ui.theme.categories.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,19 +20,20 @@ import coil3.compose.AsyncImage
 import com.example.recipecomposeapp.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
-import com.example.recipecomposeapp.ui.theme.categories.model.CategoryUiModel
 
 @Composable
 fun CategoryItem(
+    id: Int,
     title: String,
     descriptionCategory: String,
     imageUrl: String,
-    onClick: (CategoryUiModel) -> Unit,
+    onClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .clickable { onClick(id) }
             .background(MaterialTheme.colorScheme.background),
         shape = RoundedCornerShape(Dimens.EIGHT_DP)
     ) {
@@ -46,8 +48,8 @@ fun CategoryItem(
                     .fillMaxWidth()
                     .height(Dimens.CATEGORY_IMAGE_HEIGHT),
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.ic_launcher_foreground),
-                error = painterResource(R.drawable.ic_launcher_background)
+                placeholder = painterResource(R.drawable.img_placeholder),
+                error = painterResource(R.drawable.img_error)
             )
             Text(
                 text = title,
@@ -73,9 +75,10 @@ fun CategoryItemPreview() {
     RecipeComposeAppTheme {
         Column {
             CategoryItem(
+                id = 0,
                 title = "Бургеры",
                 descriptionCategory = "Рецепты всех популярных бургеров",
-                imageUrl = "file:///android_asset/burger.png",
+                imageUrl = "",
                 onClick = {},
                 modifier = Modifier.fillMaxWidth(Dimens.HALF_ONE_F)
             )

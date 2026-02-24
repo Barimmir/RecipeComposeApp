@@ -21,6 +21,7 @@ import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 fun BottomNavigation(
     onCategoriesClick: () -> Unit,
     onFavoriteClick: () -> Unit,
+    onRecipesClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -67,6 +68,7 @@ fun BottomNavigationPreview() {
         BottomNavigation(
             onCategoriesClick = {},
             onFavoriteClick = {},
+            onRecipesClick = {}
         )
     }
 }
