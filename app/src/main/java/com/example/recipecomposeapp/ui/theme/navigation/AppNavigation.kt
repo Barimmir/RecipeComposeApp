@@ -44,7 +44,7 @@ fun AppNavigation(
             val categoryId = backStackEntry.arguments?.getInt("categoryId") ?: 0
             RecipesScreen(
                 categoryId = categoryId,
-                viewModel = RecipeViewModel(),  // 👈 Добавь, если есть
+                viewModel = RecipeViewModel(),
                 onRecipeClick = onRecipeClick
             )
         }
