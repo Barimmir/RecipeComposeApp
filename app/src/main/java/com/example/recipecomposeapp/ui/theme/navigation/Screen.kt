@@ -6,4 +6,13 @@ sealed class Screen(val route: String) {
     object Recipes : Screen("recipes/{categoryId}") {
         fun createRoute(categoryId: Int) = "recipes/$categoryId"
     }
+
+    sealed class RecipeDetails(route: String) : Screen(route) {
+        object Base : RecipeDetails("recipe/{recipeId}") {
+            fun createRoute(recipeId: Int) = "recipe/$recipeId"
+        }
+    }
+
 }
+
+const val KEY_RECIPE_OBJECT = "recipe_object"

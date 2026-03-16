@@ -17,8 +17,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.recipecomposeapp.Dimens
 import com.example.recipecomposeapp.R
 
 @Composable
@@ -30,7 +29,7 @@ fun ScreenHeader(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
+            .height(Dimens.TWO_HUNDRED_DP),
         contentAlignment = Alignment.TopStart
     ) {
         Image(
@@ -42,14 +41,14 @@ fun ScreenHeader(
         Surface(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = 16.dp),
+                .padding(start = Dimens.SIXTEEN_DP, bottom = Dimens.SIXTEEN_DP),
             color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(Dimens.TWELVE_DP)
         ) {
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 28.sp
+                fontSize = Dimens.TWENTY_EIGHT_SP
             )
         }
     }

@@ -52,7 +52,6 @@ fun RecipesApp() {
                 ) {
                     AppNavigation(
                         navController = navController,
-                        onRecipeClick = { recipeId -> }
                     )
                 }
             }
