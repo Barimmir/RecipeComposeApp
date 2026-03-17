@@ -46,19 +46,22 @@ fun AppNavigation(
             RecipesScreen(
                 categoryId = categoryId,
                 onRecipeClick = { recipeId, recipe ->
-                    navController.currentBackStackEntry?.savedStateHandle?.set("recipe", recipe)
-                    navController.navigate("recipe_details/$recipeId")
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        KEY_RECIPE_OBJECT,
+                        recipe
+                    )
+                    navController.navigate(Screen.RecipeDetails.Base.createRoute(recipeId))
                 }
             )
         }
         composable(
-            route = "recipe_details/{recipeId}",
+            route = Screen.RecipeDetails.Base.route,
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
             val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
             val recipe = navController.previousBackStackEntry
                 ?.savedStateHandle
-                ?.get<RecipeUiModel>("recipe")
+                ?.get<RecipeUiModel>(KEY_RECIPE_OBJECT)
                 ?: return@composable Text("Recipe not found")
             RecipeDetailsScreen(
                 recipeId = recipeId,
