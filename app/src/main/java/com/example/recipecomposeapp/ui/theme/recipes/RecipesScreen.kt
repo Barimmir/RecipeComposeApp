@@ -15,19 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.ScreenHeader
 import com.example.recipecomposeapp.ui.theme.recipes.components.RecipeItem
+import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
 import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeViewModel
 
 @Composable
 fun RecipesScreen(
     categoryId: Int?,
     modifier: Modifier = Modifier,
-    viewModel: RecipeViewModel,
-    onRecipeClick: (Int) -> Unit
+    onRecipeClick: (Int, RecipeUiModel) -> Unit
 ) {
+    val viewModel: RecipeViewModel = viewModel()
     val recipes by viewModel.recipes.collectAsState()
     LaunchedEffect(categoryId) {
         if (categoryId != null) viewModel.loadRecipes(categoryId) else println("ERROR")
@@ -57,11 +59,7 @@ fun RecipesScreen(
         ) {
             items(items = recipes, key = { it.id }) { recipe ->
                 RecipeItem(
-                    id = recipe.id,
-                    title = recipe.title,
-                    ingredients = recipe.ingredients,
-                    method = recipe.method,
-                    imageUrl = recipe.imageUrl,
+                    recipe = recipe,
                     onRecipeClick = onRecipeClick
                 )
             }
@@ -76,7 +74,6 @@ fun RecipesScreenPreview() {
     RecipeComposeAppTheme {
         RecipesScreen(
             categoryId = 0,
-            viewModel = RecipeViewModel(),
-            onRecipeClick = {})
+            onRecipeClick = { _, _ -> })
     }
 }
