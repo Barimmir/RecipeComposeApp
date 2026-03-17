@@ -12,7 +12,6 @@ sealed class Screen(val route: String) {
             fun createRoute(recipeId: Int) = "recipe/$recipeId"
         }
     }
-
 }
 
 const val KEY_RECIPE_OBJECT = "recipe_object"
