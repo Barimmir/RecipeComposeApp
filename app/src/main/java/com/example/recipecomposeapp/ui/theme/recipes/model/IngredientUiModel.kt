@@ -8,5 +8,5 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class IngredientUiModel(
     val name: String,
-    val amount: String
+    val amount: Float
 ) : Parcelable

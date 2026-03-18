@@ -46,7 +46,8 @@ fun ScreenHeader(
             shape = RoundedCornerShape(Dimens.TWELVE_DP)
         ) {
             Text(
-                text = title,
+                text = title.uppercase(),
+                style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = Dimens.TWENTY_EIGHT_SP
             )
@@ -57,9 +58,12 @@ fun ScreenHeader(
 @Preview
 @Composable
 fun ScreenHeaderPreview() {
-    ScreenHeader(
-        "Категории",
-        imagePainter = painterResource(id = R.drawable.bcg_categories),
-        contentDescription = ""
-    )
+    RecipeComposeAppTheme {
+        ScreenHeader(
+            "Категории",
+            imagePainter = painterResource(id = R.drawable.bcg_categories),
+            contentDescription = ""
+        )
+    }
+
 }

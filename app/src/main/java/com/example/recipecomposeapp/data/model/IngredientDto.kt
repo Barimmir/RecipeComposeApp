@@ -3,7 +3,7 @@ package com.example.recipecomposeapp.data.model
 import com.example.recipecomposeapp.ui.theme.recipes.model.IngredientUiModel
 
 data class IngredientDto(
-    val quantity: String,
+    val quantity: Float,
     val unitOfMeasure: String,
     val description: String,
 )
