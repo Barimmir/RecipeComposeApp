@@ -1,7 +1,11 @@
 package com.example.recipecomposeapp.ui.theme.recipes.components
 
+import android.view.Surface
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,6 +35,7 @@ import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.recipes.model.IngredientUiModel
 import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
+import java.nio.file.WatchEvent
 import kotlin.math.roundToInt
 
 @Composable
@@ -37,9 +43,9 @@ fun RecipeDetailsScreen(
     recipeId: Int,
     recipe: RecipeUiModel,
 ) {
-    var currentPortions by remember { mutableStateOf(1) }
+    var currentPortions by remember { mutableIntStateOf(1) }
 
-    val scaledIngredients = remember(currentPortions) {
+    val scaledIngredients = remember(currentPortions, recipe.ingredients) {
         recipe.ingredients.map { ingredient ->
             ingredient.copy(
                 amount = ingredient.amount * currentPortions
@@ -47,7 +53,10 @@ fun RecipeDetailsScreen(
         }
     }
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP),
     ) {
         Box(
             modifier = Modifier
@@ -77,13 +86,46 @@ fun RecipeDetailsScreen(
                 )
             }
         }
+        Text(
+            text = "Ингредиенты".uppercase(),
+            style = MaterialTheme.typography.displayLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(
+                horizontal = Dimens.SIXTEEN_DP
+            )
+        )
+        Text(
+            text = "Порции: $currentPortions",
+            style = MaterialTheme.typography.displayLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                horizontal = Dimens.SIXTEEN_DP
+            )
+        )
+        PortionsSlider(
+            currentPortions = currentPortions,
+            onPortionsChange = { newPortion ->
+                currentPortions = newPortion
+            }
+        )
+        scaledIngredients.forEach { ingredients ->
+            Text(text = "${ingredients.name} ${ingredients.amount} ${ingredients.unitOfMeasure}")
+        }
+        Text(
+            text = "Способ приготовления".uppercase(),
+            style = MaterialTheme.typography.displayLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(
+                horizontal = Dimens.SIXTEEN_DP
+            )
+        )
     }
 }
 
 @Composable
 fun PortionsSlider(
     currentPortions: Int,
-    onPortionsChange: (Int) -> Unit
+    onPortionsChange: (Int) -> Unit,
 ) {
     Slider(
         value = currentPortions.toFloat(),
@@ -91,19 +133,6 @@ fun PortionsSlider(
         valueRange = 1f..12f,
         steps = 10
     )
-}
-
-@Composable
-fun IngredientItem(
-    ingredient: List<IngredientUiModel>,
-    modifier: Modifier = Modifier,
-) {
-
-}
-
-@Composable
-fun InstructionsList(recipe: RecipeUiModel) {
-
 }
 
 @Preview(showBackground = true)
