@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RecipeComposeApp</string>
+    <plurals name="portions_count">
+        <item quantity="one">%d порция</item>
+        <item quantity="few">%d порции</item>
+        <item quantity="many">%d порций</item>
+    </plurals>
 </resources>
