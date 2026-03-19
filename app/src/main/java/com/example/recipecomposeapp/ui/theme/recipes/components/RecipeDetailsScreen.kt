@@ -6,13 +6,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -43,6 +47,7 @@ fun RecipeDetailsScreen(
     recipeId: Int,
     recipe: RecipeUiModel,
 ) {
+    val scrollState = rememberScrollState()
     var currentPortions by remember { mutableIntStateOf(1) }
 
     val scaledIngredients = remember(currentPortions, recipe.ingredients) {
@@ -50,12 +55,14 @@ fun RecipeDetailsScreen(
             ingredient.copy(
                 amount = ingredient.amount * currentPortions
             )
+
         }
     }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background),
+            .background(color = MaterialTheme.colorScheme.background)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP),
     ) {
         Box(
@@ -108,8 +115,50 @@ fun RecipeDetailsScreen(
                 currentPortions = newPortion
             }
         )
-        scaledIngredients.forEach { ingredients ->
-            Text(text = "${ingredients.name} ${ingredients.amount} ${ingredients.unitOfMeasure}")
+        if (scaledIngredients.isNotEmpty()) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Dimens.SIXTEEN_DP),
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(Dimens.TWELVE_DP)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = Dimens.EIGHT_DP)
+                ) {
+                    scaledIngredients.forEachIndexed { index, ingredient ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    horizontal = Dimens.SIXTEEN_DP,
+                                    vertical = Dimens.EIGHT_DP
+                                ),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = ingredient.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = "${formatAmount(ingredient.amount)} ${ingredient.unitOfMeasure}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        if (index < scaledIngredients.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = Dimens.SIXTEEN_DP)
+                            )
+                        }
+                    }
+                }
+            }
         }
         Text(
             text = "Способ приготовления".uppercase(),
@@ -119,6 +168,41 @@ fun RecipeDetailsScreen(
                 horizontal = Dimens.SIXTEEN_DP
             )
         )
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimens.SIXTEEN_DP)
+                .padding(bottom = Dimens.SIXTEEN_DP),
+            color = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(Dimens.TWELVE_DP)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = Dimens.EIGHT_DP)
+            ) {
+                val methodSteps = recipe.method.split("\n").filter { it.isNotBlank() }
+
+                methodSteps.forEachIndexed { index, step ->
+                    Text(
+                        text = step,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Dimens.SIXTEEN_DP, vertical = Dimens.EIGHT_DP)
+                    )
+
+                    if (index < methodSteps.lastIndex) {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = Dimens.SIXTEEN_DP)
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -135,15 +219,46 @@ fun PortionsSlider(
     )
 }
 
+fun formatAmount(amount: Float): String {
+    return when {
+        amount >= 0.75 -> "3/4"
+        amount >= 0.5 -> "1/2"
+        amount >= 0.25 -> "1/4"
+        amount > 0 -> "щепотка"
+        else -> "по вкусу"
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun RecipeDetailsScreenPreview() {
+    val sampleIngredients = listOf(
+        IngredientUiModel(
+            name = "Говяжья котлета",
+            amount = 1.0f,
+            unitOfMeasure = "шт"
+        ),
+        IngredientUiModel(
+            name = "Булочка",
+            amount = 1.0f,
+            unitOfMeasure = "шт"
+        ),
+        IngredientUiModel(
+            name = "Сыр",
+            amount = 50.0f,
+            unitOfMeasure = "г"
+        )
+    )
     val sampleRecipe = RecipeUiModel(
         id = 0,
         title = "Классический бургер",
         imageUrl = "file:///android_asset/burger_hamburger.png",
-        ingredients = emptyList(),
-        method = "Приготовление...",
+        ingredients = sampleIngredients,
+        method = "\n1. В глубокой миске смешайте говяжий фарш, лук, чеснок, соль и перец. Разделите фарш на 4 равные части и сформируйте котлеты." +
+                "\n2. Разогрейте сковороду на среднем огне. Обжаривайте котлеты с каждой стороны в течение 4-5 минут или до желаемой степени прожарки." +
+                "\n3. В то время как котлеты готовятся, подготовьте булочки. Разрежьте их пополам и обжарьте на сковороде до золотистой корочки." +
+                "\n4. Смазать нижние половинки булочек горчицей и кетчупом, затем положите лист салата, котлету, кольца помидора и закройте верхней половинкой булочки." +
+                "\n5. Подавайте бургеры горячими с картофельными чипсами или картофельным пюре.",
         isFavorite = false
     )
     RecipeComposeAppTheme {
