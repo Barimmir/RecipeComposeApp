@@ -46,7 +46,7 @@ fun ScreenHeader(
             shape = RoundedCornerShape(Dimens.TWELVE_DP)
         ) {
             Text(
-                text = title.uppercase(),
+                text = title,
                 style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = Dimens.TWENTY_EIGHT_SP

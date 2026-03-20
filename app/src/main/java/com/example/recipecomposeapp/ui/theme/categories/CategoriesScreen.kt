@@ -39,7 +39,7 @@ fun CategoriesScreen(
     ) {
         val categories by viewModel.categories.collectAsState()
         ScreenHeader(
-            "Категории",
+            "Категории".uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_categories),
             contentDescription = "Шапка категорий"
         )

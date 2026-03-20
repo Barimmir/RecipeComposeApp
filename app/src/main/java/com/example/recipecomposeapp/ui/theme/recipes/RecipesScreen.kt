@@ -51,7 +51,7 @@ fun RecipesScreen(
             .background(color = MaterialTheme.colorScheme.background)
     ) {
         ScreenHeader(
-            title = categoryTitle,
+            title = categoryTitle.uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_recipes_list),
             contentDescription = "Шапка рецептов"
         )
