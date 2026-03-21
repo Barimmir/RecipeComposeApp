@@ -17,7 +17,7 @@ fun FavoritesScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
     ) {
         ScreenHeader(
-            "Избранные",
+            "Избранные".uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_favorites),
             contentDescription = "Шапка избранных"
         )

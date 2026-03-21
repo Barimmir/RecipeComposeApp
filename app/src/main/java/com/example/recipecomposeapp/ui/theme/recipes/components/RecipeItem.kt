@@ -29,7 +29,8 @@ fun RecipeItem(
         modifier = modifier.clickable { onRecipeClick(recipe.id, recipe) }
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
         ) {
             AsyncImage(
                 model = recipe.imageUrl,

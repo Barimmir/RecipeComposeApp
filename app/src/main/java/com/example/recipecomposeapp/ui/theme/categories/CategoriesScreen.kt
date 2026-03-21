@@ -1,5 +1,7 @@
 package com.example.recipecomposeapp.ui.theme.categories
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,11 +34,12 @@ fun CategoriesScreen(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
     ) {
         val categories by viewModel.categories.collectAsState()
         ScreenHeader(
-            "Категории",
+            "Категории".uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_categories),
             contentDescription = "Шапка категорий"
         )
@@ -63,6 +67,7 @@ fun CategoriesScreen(
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
 fun CategoriesScreenPreview() {

@@ -47,6 +47,7 @@ fun ScreenHeader(
         ) {
             Text(
                 text = title,
+                style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = Dimens.TWENTY_EIGHT_SP
             )
@@ -57,9 +58,12 @@ fun ScreenHeader(
 @Preview
 @Composable
 fun ScreenHeaderPreview() {
-    ScreenHeader(
-        "Категории",
-        imagePainter = painterResource(id = R.drawable.bcg_categories),
-        contentDescription = ""
-    )
+    RecipeComposeAppTheme {
+        ScreenHeader(
+            "Категории",
+            imagePainter = painterResource(id = R.drawable.bcg_categories),
+            contentDescription = ""
+        )
+    }
+
 }
