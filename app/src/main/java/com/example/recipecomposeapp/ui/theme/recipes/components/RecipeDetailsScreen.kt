@@ -177,10 +177,11 @@ fun PortionsSlider(
 fun IngredientItem(
     index: Int,
     ingredient: IngredientUiModel,
-    scaledIngredients: List<IngredientUiModel>
+    scaledIngredients: List<IngredientUiModel>,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(
                 horizontal = Dimens.SIXTEEN_DP,
