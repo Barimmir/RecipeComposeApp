@@ -139,6 +139,7 @@ object RecipesRepositoryStub {
             "burger_cheeseburger.png"
         )
     )
+    private val allRecipes = burgerRecipesList
 
     fun getCategories(): List<CategoryDto> {
         return categoryList
@@ -149,5 +150,9 @@ object RecipesRepositoryStub {
             0 -> burgerRecipesList
             else -> emptyList()
         }
+    }
+
+    fun getRecipeById(recipeId: Int): RecipeDto? {
+        return allRecipes.find { it.id == recipeId }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.recipecomposeapp.ui.theme.recipes.components
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.rememberAsyncImagePainter
@@ -36,7 +38,9 @@ import kotlin.math.roundToInt
 fun RecipeDetailsScreen(
     recipeId: Int,
     recipe: RecipeUiModel,
+    shareRecipe: (Context, Int, String) -> Unit,
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     val recipePainter = rememberAsyncImagePainter(recipe.imageUrl)
     var currentPortions by remember { mutableIntStateOf(1) }
@@ -58,7 +62,9 @@ fun RecipeDetailsScreen(
         ScreenHeader(
             title = recipe.title,
             imagePainter = recipePainter,
-            contentDescription = "Заголовок рецептов"
+            contentDescription = "Заголовок рецептов",
+            showShareButton = true,
+            onShareClick = { shareRecipe(context, recipe.id, recipe.title) }
         )
 
         Text(
@@ -256,6 +262,7 @@ fun RecipeDetailsScreenPreview() {
         RecipeDetailsScreen(
             recipeId = 0,
             recipe = sampleRecipe,
+            shareRecipe = { _, _, _ -> }
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.recipecomposeapp
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,13 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
+import com.example.recipecomposeapp.data.model.toUiModel
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.navigation.AppNavigation
 import com.example.recipecomposeapp.ui.theme.navigation.BottomNavigation
 import com.example.recipecomposeapp.ui.theme.navigation.Screen
 
 @Composable
-fun RecipesApp() {
+fun RecipesApp(deepLinkIntent: Intent?) {
     val navController = rememberNavController()
     RecipeComposeAppTheme {
         Surface(
@@ -52,6 +55,10 @@ fun RecipesApp() {
                 ) {
                     AppNavigation(
                         navController = navController,
+                        deepLinkIntent = deepLinkIntent,
+                        getRecipeById = { recipeId ->
+                            RecipesRepositoryStub.getRecipeById(recipeId)?.toUiModel()
+                        }
                     )
                 }
             }
@@ -64,7 +71,7 @@ fun RecipesApp() {
 fun RecipesAppPreview() {
     RecipeComposeAppTheme {
         Surface {
-            RecipesApp()
+            RecipesApp(null)
         }
     }
 }

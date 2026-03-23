@@ -1,8 +1,12 @@
 package com.example.recipecomposeapp.ui.theme.navigation
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -16,13 +20,47 @@ import com.example.recipecomposeapp.ui.theme.favorites.FavoritesScreen
 import com.example.recipecomposeapp.ui.theme.recipes.RecipesScreen
 import com.example.recipecomposeapp.ui.theme.recipes.components.RecipeDetailsScreen
 import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
+import com.example.recipecomposeapp.Constants
+import com.example.recipecomposeapp.createRecipeDeepLink
+
+fun shareRecipe(context: Context, recipeId: Int, recipeTitle: String) {
+    val deepLink = createRecipeDeepLink(recipeId)
+    val shareText = "Посмотри этот рецепт: $recipeTitle\n\n$deepLink"
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, shareText)
+        putExtra(Intent.EXTRA_SUBJECT, "Рецепт: $recipeTitle")
+    }
+    context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
+}
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    deepLinkIntent: Intent? = null,
+    getRecipeById: (Int) -> RecipeUiModel?
 ) {
+    LaunchedEffect(deepLinkIntent) {
+        deepLinkIntent?.data?.let { uri ->
+            val recipeId: Int? = when (uri.scheme) {
+                Constants.DEEP_LINK_SCHEME ->
+                    if (uri.host == "recipe") uri.pathSegments[0].toIntOrNull() else null
+
+                "https", "http" ->
+                    if (uri.pathSegments[0] == "recipe") uri.pathSegments[1].toIntOrNull() else null
+
+                else -> null
+            }
+
+            if (recipeId != null) {
+                delay(100)
+                navController.navigate(Screen.RecipeDetails.Base.createRoute(recipeId))
+            }
+        }
+    }
+    
     NavHost(
         navController = navController,
         startDestination = Screen.Categories.route,
@@ -65,11 +103,30 @@ fun AppNavigation(
                 ?: return@composable Text("Recipe not found")
             RecipeDetailsScreen(
                 recipeId = recipeId,
-                recipe = recipe
+                recipe = recipe,
+                shareRecipe = { context, id, title -> 
+                    shareRecipe(context, id, title)
+                }
             )
         }
         composable(route = Screen.Favorites.route) {
             FavoritesScreen()
+        }
+        composable(
+            route = Screen.RecipeDetails.Base.route,
+            arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
+            val recipe = getRecipeById(recipeId)
+            recipe?.let {
+                RecipeDetailsScreen(
+                    recipeId = recipeId,
+                    recipe = it,
+                    shareRecipe = { context, id, title -> 
+                        shareRecipe(context, id, title)
+                    }
+                )
+            }
         }
     }
 }
