@@ -1,7 +1,6 @@
 package com.example.recipecomposeapp.ui.theme.navigation
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,18 +20,6 @@ import com.example.recipecomposeapp.ui.theme.recipes.RecipesScreen
 import com.example.recipecomposeapp.ui.theme.recipes.components.RecipeDetailsScreen
 import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
 import com.example.recipecomposeapp.Constants
-import com.example.recipecomposeapp.createRecipeDeepLink
-
-fun shareRecipe(context: Context, recipeId: Int, recipeTitle: String) {
-    val deepLink = createRecipeDeepLink(recipeId)
-    val shareText = "Посмотри этот рецепт: $recipeTitle\n\n$deepLink"
-    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(Intent.EXTRA_TEXT, shareText)
-        putExtra(Intent.EXTRA_SUBJECT, "Рецепт: $recipeTitle")
-    }
-    context.startActivity(Intent.createChooser(shareIntent, "Поделиться рецептом"))
-}
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable

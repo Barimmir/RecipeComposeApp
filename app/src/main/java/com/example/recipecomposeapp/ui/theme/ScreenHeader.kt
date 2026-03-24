@@ -26,7 +26,7 @@ fun ScreenHeader(
     imagePainter: Painter,
     contentDescription: String,
     showShareButton: Boolean,
-    onShareClick: Any,
+    onShareClick:  () -> Unit,
 ) {
     Box(
         modifier = Modifier

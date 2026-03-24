@@ -16,10 +16,10 @@ class MainActivity : ComponentActivity() {
         intent?.data?.let {
             deepLinkIntent = intent
         }
+        enableEdgeToEdge()
         setContent {
             RecipesApp(deepLinkIntent = deepLinkIntent)
         }
-        enableEdgeToEdge()
     }
 
     override fun onNewIntent(intent: Intent) {
