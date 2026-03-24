@@ -19,7 +19,9 @@ fun FavoritesScreen(modifier: Modifier = Modifier) {
         ScreenHeader(
             "Избранные".uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_favorites),
-            contentDescription = "Шапка избранных"
+            contentDescription = "Шапка избранных",
+            showShareButton = true,
+            onShareClick = {}
         )
     }
 }

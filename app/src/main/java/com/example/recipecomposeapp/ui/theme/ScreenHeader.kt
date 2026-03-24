@@ -25,6 +25,8 @@ fun ScreenHeader(
     title: String,
     imagePainter: Painter,
     contentDescription: String,
+    showShareButton: Boolean,
+    onShareClick:  () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -62,7 +64,9 @@ fun ScreenHeaderPreview() {
         ScreenHeader(
             "Категории",
             imagePainter = painterResource(id = R.drawable.bcg_categories),
-            contentDescription = ""
+            contentDescription = "",
+            showShareButton = true,
+            onShareClick = {}
         )
     }
 

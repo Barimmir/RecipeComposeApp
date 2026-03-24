@@ -41,7 +41,9 @@ fun CategoriesScreen(
         ScreenHeader(
             "Категории".uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_categories),
-            contentDescription = "Шапка категорий"
+            contentDescription = "Шапка категорий",
+            showShareButton = true,
+            onShareClick = {}
         )
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),

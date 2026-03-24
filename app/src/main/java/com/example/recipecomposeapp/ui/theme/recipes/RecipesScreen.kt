@@ -53,7 +53,9 @@ fun RecipesScreen(
         ScreenHeader(
             title = categoryTitle.uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_recipes_list),
-            contentDescription = "Шапка рецептов"
+            contentDescription = "Шапка рецептов",
+            showShareButton = true,
+            onShareClick = {}
         )
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
