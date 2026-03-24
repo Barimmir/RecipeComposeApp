@@ -55,7 +55,10 @@ fun RecipesScreen(
             imagePainter = painterResource(id = R.drawable.bcg_recipes_list),
             contentDescription = "Шапка рецептов",
             showShareButton = true,
-            onShareClick = {}
+            onShareClick = {},
+            isFavorite = false,
+            showFavoriteButton = false,
+            onFavoriteClick = {}
         )
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
