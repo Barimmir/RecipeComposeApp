@@ -41,8 +41,6 @@ fun RecipeDetailsScreen(
     recipeId: Int,
     recipe: RecipeUiModel,
     shareRecipe: (Context, Int, String) -> Unit,
-    isFavorite: Boolean = false,
-    onFavoriteToggle: (Boolean) -> Unit = {}
 ) {
     var isFavorite by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
