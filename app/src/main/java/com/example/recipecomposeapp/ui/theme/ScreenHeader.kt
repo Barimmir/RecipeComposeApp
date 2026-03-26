@@ -83,14 +83,18 @@ fun ScreenHeader(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(start = Dimens.SIXTEEN_DP, bottom = Dimens.SIXTEEN_DP),
-            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
             shape = RoundedCornerShape(Dimens.TWELVE_DP)
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.onSurface,
-                fontSize = Dimens.TWENTY_EIGHT_SP
+                fontSize = Dimens.TWENTY_EIGHT_SP,
+                modifier = Modifier.padding(
+                    horizontal = Dimens.SIXTEEN_DP,
+                    vertical = Dimens.EIGHT_DP
+                )
             )
         }
     }

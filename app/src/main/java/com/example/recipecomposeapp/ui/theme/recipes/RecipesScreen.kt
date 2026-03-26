@@ -16,8 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.recipecomposeapp.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.ScreenHeader
@@ -62,8 +62,8 @@ fun RecipesScreen(
         )
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(Dimens.SIXTEEN_DP),
+            verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
         ) {
             items(items = recipes, key = { it.id }) { recipe ->
                 RecipeItem(
