@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -33,12 +35,16 @@ fun CategoryItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .heightIn(Dimens.TWO_HUNDRED_TWENTY_DP)
             .clickable { onClick(id) }
             .background(MaterialTheme.colorScheme.background),
         shape = RoundedCornerShape(Dimens.EIGHT_DP)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(Dimens.WEIGHT_ONE_F)
+                .background(MaterialTheme.colorScheme.surface),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AsyncImage(
@@ -46,7 +52,7 @@ fun CategoryItem(
                 contentDescription = title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(Dimens.CATEGORY_IMAGE_HEIGHT),
+                    .height(Dimens.ONE_HUNDRED_TWENTY_DP),
                 contentScale = ContentScale.Crop,
                 placeholder = painterResource(R.drawable.img_placeholder),
                 error = painterResource(R.drawable.img_error)
@@ -56,14 +62,25 @@ fun CategoryItem(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = Dimens.SIXTEEN_DP,
+                        vertical = Dimens.EIGHT_DP
+                    )
             )
             Text(
                 text = descriptionCategory,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = Dimens.SIXTEEN_DP,
+                        vertical = Dimens.EIGHT_DP
+                    ),
+                maxLines = 3
             )
         }
     }
@@ -77,7 +94,7 @@ fun CategoryItemPreview() {
             CategoryItem(
                 id = 0,
                 title = "Бургеры",
-                descriptionCategory = "Рецепты всех популярных бургеров",
+                descriptionCategory = "Рецепты всех популярных бургеров видов бургеров",
                 imageUrl = "",
                 onClick = {},
                 modifier = Modifier.fillMaxWidth(Dimens.HALF_ONE_F)

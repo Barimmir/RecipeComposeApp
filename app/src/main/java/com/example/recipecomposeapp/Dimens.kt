@@ -4,7 +4,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object Dimens {
-    val CATEGORY_IMAGE_HEIGHT = 120.dp
+    val TWO_HUNDRED_TWENTY_DP = 220.dp
+    val ONE_HUNDRED_TWENTY_DP = 120.dp
     val EIGHT_DP = 8.dp
     val TWELVE_DP = 12.dp
     val SIXTEEN_DP = 16.dp

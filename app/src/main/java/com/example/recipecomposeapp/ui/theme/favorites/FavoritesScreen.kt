@@ -21,7 +21,10 @@ fun FavoritesScreen(modifier: Modifier = Modifier) {
             imagePainter = painterResource(id = R.drawable.bcg_favorites),
             contentDescription = "Шапка избранных",
             showShareButton = true,
-            onShareClick = {}
+            onShareClick = {},
+            isFavorite = false,
+            showFavoriteButton = false,
+            onFavoriteClick = {}
         )
     }
 }
