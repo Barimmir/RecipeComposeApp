@@ -17,6 +17,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -34,15 +35,26 @@ import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.ScreenHeader
 import com.example.recipecomposeapp.ui.theme.recipes.model.IngredientUiModel
 import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
+import com.example.recipecomposeapp.util.FavoritePrefsManager
 import kotlin.math.roundToInt
 
 @Composable
 fun RecipeDetailsScreen(
     recipeId: Int,
     recipe: RecipeUiModel,
+    favoritePrefs: FavoritePrefsManager,
     shareRecipe: (Context, Int, String) -> Unit,
 ) {
-    var isFavorite by rememberSaveable { mutableStateOf(false) }
+    var isFavorite by rememberSaveable(recipeId) {
+        mutableStateOf(favoritePrefs.isFavorite(recipeId))
+    }
+    LaunchedEffect(isFavorite) {
+        if (isFavorite) {
+            favoritePrefs.addToFavorites(recipeId)
+        } else {
+            favoritePrefs.removeFromFavorites(recipeId)
+        }
+    }
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val recipePainter = rememberAsyncImagePainter(recipe.imageUrl)
@@ -267,7 +279,8 @@ fun RecipeDetailsScreenPreview() {
         RecipeDetailsScreen(
             recipeId = 0,
             recipe = sampleRecipe,
-            shareRecipe = { _, _, _ -> }
+            shareRecipe = { _, _, _ -> },
+            favoritePrefs = FavoritePrefsManager
         )
     }
 }
