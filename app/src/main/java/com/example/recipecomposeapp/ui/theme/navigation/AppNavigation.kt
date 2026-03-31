@@ -5,8 +5,10 @@ import android.content.Intent
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,7 +22,7 @@ import com.example.recipecomposeapp.ui.theme.recipes.RecipesScreen
 import com.example.recipecomposeapp.ui.theme.recipes.components.RecipeDetailsScreen
 import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
 import com.example.recipecomposeapp.Constants
-import com.example.recipecomposeapp.util.FavoritePrefsManager
+import com.example.recipecomposeapp.util.FavoriteDataStoreManager
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable
@@ -30,6 +32,8 @@ fun AppNavigation(
     deepLinkIntent: Intent? = null,
     getRecipeById: (Int) -> RecipeUiModel?
 ) {
+    val context = LocalContext.current
+    val favoriteManager = remember { FavoriteDataStoreManager(context) }
     LaunchedEffect(deepLinkIntent) {
         deepLinkIntent?.data?.let { uri ->
             val recipeId: Int? = when (uri.scheme) {
@@ -95,7 +99,7 @@ fun AppNavigation(
                 shareRecipe = { context, id, title ->
                     shareRecipe(context, id, title)
                 },
-                favoritePrefs = FavoritePrefsManager
+                favoriteManager = favoriteManager
             )
         }
         composable(route = Screen.Favorites.route) {
@@ -114,7 +118,7 @@ fun AppNavigation(
                     shareRecipe = { context, id, title ->
                         shareRecipe(context, id, title)
                     },
-                    favoritePrefs = FavoritePrefsManager
+                    favoriteManager = favoriteManager
                 )
             }
         }
