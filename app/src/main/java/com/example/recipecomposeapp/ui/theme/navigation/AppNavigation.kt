@@ -20,6 +20,7 @@ import com.example.recipecomposeapp.ui.theme.recipes.RecipesScreen
 import com.example.recipecomposeapp.ui.theme.recipes.components.RecipeDetailsScreen
 import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
 import com.example.recipecomposeapp.Constants
+import com.example.recipecomposeapp.util.FavoritePrefsManager
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable
@@ -47,7 +48,7 @@ fun AppNavigation(
             }
         }
     }
-    
+
     NavHost(
         navController = navController,
         startDestination = Screen.Categories.route,
@@ -91,9 +92,10 @@ fun AppNavigation(
             RecipeDetailsScreen(
                 recipeId = recipeId,
                 recipe = recipe,
-                shareRecipe = { context, id, title -> 
+                shareRecipe = { context, id, title ->
                     shareRecipe(context, id, title)
-                }
+                },
+                favoritePrefs = FavoritePrefsManager
             )
         }
         composable(route = Screen.Favorites.route) {
@@ -109,9 +111,10 @@ fun AppNavigation(
                 RecipeDetailsScreen(
                     recipeId = recipeId,
                     recipe = it,
-                    shareRecipe = { context, id, title -> 
+                    shareRecipe = { context, id, title ->
                         shareRecipe(context, id, title)
-                    }
+                    },
+                    favoritePrefs = FavoritePrefsManager
                 )
             }
         }
