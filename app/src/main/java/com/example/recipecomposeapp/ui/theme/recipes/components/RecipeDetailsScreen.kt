@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -48,12 +49,15 @@ fun RecipeDetailsScreen(
     var isFavorite by rememberSaveable(recipeId) {
         mutableStateOf(favoritePrefs.isFavorite(recipeId))
     }
-    LaunchedEffect(isFavorite) {
-        if (isFavorite) {
-            favoritePrefs.addToFavorites(recipeId)
-        } else {
-            favoritePrefs.removeFromFavorites(recipeId)
-        }
+    LaunchedEffect(recipeId) {
+        snapshotFlow { isFavorite }
+            .collect { favorite ->
+                if (favorite) {
+                    favoritePrefs.addToFavorites(recipeId)
+                } else {
+                    favoritePrefs.removeFromFavorites(recipeId)
+                }
+            }
     }
     val context = LocalContext.current
     val scrollState = rememberScrollState()
