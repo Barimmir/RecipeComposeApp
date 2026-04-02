@@ -17,10 +17,9 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -44,21 +43,17 @@ import kotlin.math.roundToInt
 fun RecipeDetailsScreen(
     recipeId: Int,
     recipe: RecipeUiModel,
-    favoriteManager: FavoriteDataStoreManager,
+    favoriteDataStoreManager: FavoriteDataStoreManager,
     shareRecipe: (Context, Int, String) -> Unit,
 ) {
-    var isFavorite by rememberSaveable(recipeId) {
-        mutableStateOf(false)
-    }
+    val isFavorite by favoriteDataStoreManager
+        .isFavoriteFlow(recipe.id)
+        .collectAsState(initial = false)
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(recipe.id) {
-        isFavorite = favoriteManager.isFavorite(recipe.id)
-    }
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val recipePainter = rememberAsyncImagePainter(recipe.imageUrl)
     var currentPortions by rememberSaveable { mutableIntStateOf(1) }
-
     val scaledIngredients = remember(currentPortions, recipe.ingredients) {
         recipe.ingredients.map { ingredient ->
             ingredient.copy(
@@ -84,11 +79,10 @@ fun RecipeDetailsScreen(
             onFavoriteClick = {
                 coroutineScope.launch {
                     if (isFavorite) {
-                        favoriteManager.removeFavorite(recipe.id)
+                        favoriteDataStoreManager.removeFavorite(recipe.id)
                     } else {
-                        favoriteManager.addFavorite(recipe.id)
+                        favoriteDataStoreManager.addFavorite(recipe.id)
                     }
-                    isFavorite = !isFavorite
                 }
             }
         )
@@ -289,7 +283,7 @@ fun RecipeDetailsScreenPreview() {
             recipeId = 0,
             recipe = sampleRecipe,
             shareRecipe = { _, _, _ -> },
-            favoriteManager = FavoriteDataStoreManager(context)
+            favoriteDataStoreManager = FavoriteDataStoreManager(context)
         )
     }
 }
