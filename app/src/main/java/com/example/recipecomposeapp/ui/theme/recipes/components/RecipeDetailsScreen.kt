@@ -22,9 +22,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -36,28 +36,23 @@ import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.ScreenHeader
 import com.example.recipecomposeapp.ui.theme.recipes.model.IngredientUiModel
 import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
-import com.example.recipecomposeapp.util.FavoritePrefsManager
+import com.example.recipecomposeapp.util.FavoriteDataStoreManager
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 fun RecipeDetailsScreen(
     recipeId: Int,
     recipe: RecipeUiModel,
-    favoritePrefs: FavoritePrefsManager,
+    favoriteManager: FavoriteDataStoreManager,
     shareRecipe: (Context, Int, String) -> Unit,
 ) {
     var isFavorite by rememberSaveable(recipeId) {
-        mutableStateOf(favoritePrefs.isFavorite(recipeId))
+        mutableStateOf(false)
     }
-    LaunchedEffect(recipeId) {
-        snapshotFlow { isFavorite }
-            .collect { favorite ->
-                if (favorite) {
-                    favoritePrefs.addToFavorites(recipeId)
-                } else {
-                    favoritePrefs.removeFromFavorites(recipeId)
-                }
-            }
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(recipe.id) {
+        isFavorite = favoriteManager.isFavorite(recipe.id)
     }
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -86,7 +81,16 @@ fun RecipeDetailsScreen(
             onShareClick = { shareRecipe(context, recipe.id, recipe.title) },
             isFavorite = isFavorite,
             showFavoriteButton = true,
-            onFavoriteClick = { isFavorite = !isFavorite }
+            onFavoriteClick = {
+                coroutineScope.launch {
+                    if (isFavorite) {
+                        favoriteManager.removeFavorite(recipe.id)
+                    } else {
+                        favoriteManager.addFavorite(recipe.id)
+                    }
+                    isFavorite = !isFavorite
+                }
+            }
         )
         Text(
             text = "Ингредиенты".uppercase(),
@@ -280,11 +284,12 @@ fun RecipeDetailsScreenPreview() {
         isFavorite = false
     )
     RecipeComposeAppTheme {
+        val context = LocalContext.current
         RecipeDetailsScreen(
             recipeId = 0,
             recipe = sampleRecipe,
             shareRecipe = { _, _, _ -> },
-            favoritePrefs = FavoritePrefsManager
+            favoriteManager = FavoriteDataStoreManager(context)
         )
     }
 }
