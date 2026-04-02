@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -55,18 +54,6 @@ fun RecipeDetailsScreen(
     LaunchedEffect(recipe.id) {
         isFavorite = favoriteManager.isFavorite(recipe.id)
     }
-    Button(onClick = {
-        coroutineScope.launch {
-            if (isFavorite) {
-                favoriteManager.removeFavorite(recipe.id)
-            } else {
-                favoriteManager.addFavorite(recipe.id)
-            }
-            isFavorite = !isFavorite
-        }
-    }) {
-        Text("Избранное")
-    }
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     val recipePainter = rememberAsyncImagePainter(recipe.imageUrl)
@@ -94,7 +81,16 @@ fun RecipeDetailsScreen(
             onShareClick = { shareRecipe(context, recipe.id, recipe.title) },
             isFavorite = isFavorite,
             showFavoriteButton = true,
-            onFavoriteClick = { isFavorite = !isFavorite }
+            onFavoriteClick = {
+                coroutineScope.launch {
+                    if (isFavorite) {
+                        favoriteManager.removeFavorite(recipe.id)
+                    } else {
+                        favoriteManager.addFavorite(recipe.id)
+                    }
+                    isFavorite = !isFavorite
+                }
+            }
         )
         Text(
             text = "Ингредиенты".uppercase(),

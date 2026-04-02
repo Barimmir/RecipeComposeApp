@@ -2,6 +2,7 @@ package com.example.recipecomposeapp.util
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
@@ -13,5 +14,13 @@ object PreferencesKeys {
 }
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "recipe_app_prefs"
+    name = "recipe_app_prefs",
+    produceMigrations = { context ->
+        listOf(
+            SharedPreferencesMigration(
+                context = context,
+                sharedPreferencesName = "FavoriteRecipes"
+            )
+        )
+    }
 )

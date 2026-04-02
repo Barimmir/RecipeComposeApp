@@ -1,11 +1,7 @@
 package com.example.recipecomposeapp.util
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.SharedPreferencesMigration
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 
 class FavoriteDataStoreManager(private val context: Context) {
@@ -31,16 +27,4 @@ class FavoriteDataStoreManager(private val context: Context) {
             preferences[PreferencesKeys.FAVORITE_RECIPE_IDS] = updatedFavorites
         }
     }
-
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-        name = "recipe_app_prefs",
-        produceMigrations = { context ->
-            listOf(
-                SharedPreferencesMigration(
-                    context = context,
-                    sharedPreferencesName = "FavoriteRecipes"
-                )
-            )
-        }
-    )
 }
