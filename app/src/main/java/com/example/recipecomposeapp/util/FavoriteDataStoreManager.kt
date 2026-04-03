@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class FavoriteDataStoreManager(private val context: Context) {
-    val preferencesFlow: Flow<Preferences> = context.dataStore.data
+    private val preferencesFlow: Flow<Preferences> = context.dataStore.data
 
     suspend fun isFavorite(recipeId: Int): Boolean {
         val preferences = context.dataStore.data.first()
