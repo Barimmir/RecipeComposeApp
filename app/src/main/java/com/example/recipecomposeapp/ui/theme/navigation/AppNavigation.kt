@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,10 +29,9 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     deepLinkIntent: Intent? = null,
-    getRecipeById: (Int) -> RecipeUiModel?
+    getRecipeById: (Int) -> RecipeUiModel?,
+    favoriteDataStoreManager: FavoriteDataStoreManager
 ) {
-    val context = LocalContext.current
-    val favoriteManager = remember { FavoriteDataStoreManager(context) }
     LaunchedEffect(deepLinkIntent) {
         deepLinkIntent?.data?.let { uri ->
             val recipeId: Int? = when (uri.scheme) {
@@ -99,7 +97,7 @@ fun AppNavigation(
                 shareRecipe = { context, id, title ->
                     shareRecipe(context, id, title)
                 },
-                favoriteManager = favoriteManager
+                favoriteDataStoreManager = favoriteDataStoreManager
             )
         }
         composable(route = Screen.Favorites.route) {
@@ -118,7 +116,7 @@ fun AppNavigation(
                     shareRecipe = { context, id, title ->
                         shareRecipe(context, id, title)
                     },
-                    favoriteManager = favoriteManager
+                    favoriteDataStoreManager = favoriteDataStoreManager
                 )
             }
         }

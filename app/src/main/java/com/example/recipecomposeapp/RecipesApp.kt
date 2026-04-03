@@ -8,7 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
@@ -17,10 +19,13 @@ import com.example.recipecomposeapp.ui.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.ui.theme.navigation.AppNavigation
 import com.example.recipecomposeapp.ui.theme.navigation.BottomNavigation
 import com.example.recipecomposeapp.ui.theme.navigation.Screen
+import com.example.recipecomposeapp.util.FavoriteDataStoreManager
 
 @Composable
 fun RecipesApp(deepLinkIntent: Intent?) {
     val navController = rememberNavController()
+    val context = LocalContext.current
+    val favoriteManager = remember { FavoriteDataStoreManager(context) }
     RecipeComposeAppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -44,7 +49,8 @@ fun RecipesApp(deepLinkIntent: Intent?) {
                             navController.navigate(Screen.Recipes.route) {
                                 popUpTo(Screen.Recipes.route) { inclusive = true }
                             }
-                        }
+                        },
+                        favoriteDataStoreManager = favoriteManager
                     )
                 }
             ) { paddingValues ->
@@ -58,7 +64,8 @@ fun RecipesApp(deepLinkIntent: Intent?) {
                         deepLinkIntent = deepLinkIntent,
                         getRecipeById = { recipeId ->
                             RecipesRepositoryStub.getRecipeById(recipeId)?.toUiModel()
-                        }
+                        },
+                        favoriteDataStoreManager = favoriteManager
                     )
                 }
             }
