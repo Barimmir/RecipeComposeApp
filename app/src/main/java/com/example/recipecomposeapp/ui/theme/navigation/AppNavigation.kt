@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -21,6 +20,7 @@ import com.example.recipecomposeapp.ui.theme.recipes.RecipesScreen
 import com.example.recipecomposeapp.ui.theme.recipes.components.RecipeDetailsScreen
 import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
 import com.example.recipecomposeapp.Constants
+import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
 import com.example.recipecomposeapp.util.FavoriteDataStoreManager
 
 @SuppressLint("ViewModelConstructorInComposable")
@@ -101,7 +101,17 @@ fun AppNavigation(
             )
         }
         composable(route = Screen.Favorites.route) {
-            FavoritesScreen()
+            FavoritesScreen(
+                recipesRepository = RecipesRepositoryStub,
+                favoriteDataStoreManager = favoriteDataStoreManager,
+                onRecipeClick = { recipeId, recipe ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        KEY_RECIPE_OBJECT,
+                        recipe
+                    )
+                    navController.navigate(Screen.RecipeDetails.Base.createRoute(recipeId))
+                },
+                modifier = Modifier)
         }
         composable(
             route = Screen.RecipeDetails.Base.route,
