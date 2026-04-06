@@ -64,10 +64,14 @@ fun BottomNavigation(
             BadgedBox(
                 badge = {
                     if (favoriteCount > 0) {
-                        Badge {
+                        Badge(
+                            containerColor = Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.surface
+                        ) {
                             Text(
                                 text = if (favoriteCount > 99) "99+" else favoriteCount.toString(),
-                                style = MaterialTheme.typography.labelSmall
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.displayLarge
                             )
                         }
                     }

@@ -1,6 +1,5 @@
 package com.example.recipecomposeapp.ui.theme.favorites
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,7 +31,6 @@ import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
 import com.example.recipecomposeapp.util.FavoriteDataStoreManager
 import kotlinx.coroutines.flow.map
 
-@SuppressLint("FlowOperatorInvokedInComposition")
 @Composable
 fun FavoritesScreen(
     recipesRepository: RecipesRepositoryStub,
@@ -40,11 +39,13 @@ fun FavoritesScreen(
     modifier: Modifier = Modifier
 ) {
     val favoriteIdsFlow = favoriteDataStoreManager.getFavoriteIdsFlow()
-    val favoriteRecipes by favoriteIdsFlow.map { ids ->
-        ids.mapNotNull { id ->
-            val intId = id.toIntOrNull()
-            intId?.let {
-                recipesRepository.getRecipeById(it)
+    val favoriteRecipes by remember {
+        favoriteIdsFlow.map { ids ->
+            ids.mapNotNull { id ->
+                val intId = id.toIntOrNull()
+                intId?.let {
+                    recipesRepository.getRecipeById(it)
+                }
             }
         }
     }.collectAsState(initial = emptyList())
