@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeComposeApp">
         <activity
-            android:name=".MainActivity"
+            android:name=".features.core.ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/Theme.RecipeComposeApp">
