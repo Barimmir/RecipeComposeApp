@@ -16,8 +16,8 @@ import androidx.navigation.navArgument
 import com.example.recipecomposeapp.features.categories.ui.CategoriesScreen
 import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesViewModel
 import com.example.recipecomposeapp.features.favorites.ui.FavoritesScreen
-import com.example.recipecomposeapp.features.ui.RecipesScreen
-import com.example.recipecomposeapp.features.ui.RecipeDetailsScreen
+import com.example.recipecomposeapp.features.recipes.ui.RecipesScreen
+import com.example.recipecomposeapp.features.details.ui.RecipeDetailsScreen
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
 import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
 import com.example.recipecomposeapp.features.core.utils.Constants

@@ -1,4 +1,4 @@
-package com.example.recipecomposeapp.features.ui
+package com.example.recipecomposeapp.features.details.ui
 
 import android.content.Context
 import androidx.compose.foundation.background

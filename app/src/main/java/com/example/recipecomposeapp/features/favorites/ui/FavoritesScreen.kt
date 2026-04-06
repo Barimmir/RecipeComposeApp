@@ -26,7 +26,7 @@ import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
 import com.example.recipecomposeapp.data.model.toUiModel
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
-import com.example.recipecomposeapp.features.ui.RecipeItem
+import com.example.recipecomposeapp.features.recipes.ui.RecipeItem
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import kotlinx.coroutines.flow.map

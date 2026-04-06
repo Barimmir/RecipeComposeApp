@@ -1,4 +1,4 @@
-package com.example.recipecomposeapp.features.ui
+package com.example.recipecomposeapp.features.recipes.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background

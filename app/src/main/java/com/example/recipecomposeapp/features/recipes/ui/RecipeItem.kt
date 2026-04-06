@@ -1,4 +1,4 @@
-package com.example.recipecomposeapp.features.ui
+package com.example.recipecomposeapp.features.recipes.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
