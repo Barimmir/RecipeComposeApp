@@ -31,11 +31,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.rememberAsyncImagePainter
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
-import com.example.recipecomposeapp.features.core.utils.RecipeComposeAppTheme
+import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
 import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientUiModel
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
-import com.example.recipecomposeapp.features.core.utils.FavoriteDataStoreManager
+import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

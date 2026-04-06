@@ -8,7 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.recipecomposeapp.features.core.utils.FavoritePrefsManager
+import com.example.recipecomposeapp.data.model.FavoritePrefsManager
 
 class MainActivity : ComponentActivity() {
     private var deepLinkIntent by mutableStateOf<Intent?>(null)

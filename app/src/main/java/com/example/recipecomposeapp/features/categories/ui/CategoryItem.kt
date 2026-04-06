@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
-import com.example.recipecomposeapp.features.core.utils.RecipeComposeAppTheme
+import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 
 @Composable
 fun CategoryItem(

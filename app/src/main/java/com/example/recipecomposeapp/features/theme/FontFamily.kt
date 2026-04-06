@@ -1,4 +1,4 @@
-package com.example.recipecomposeapp.features.core.utils
+package com.example.recipecomposeapp.features.theme
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily

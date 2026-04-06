@@ -1,4 +1,4 @@
-package com.example.recipecomposeapp.features.core.ui
+package com.example.recipecomposeapp.features.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,8 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.recipecomposeapp.features.core.utils.Dimens
-import com.example.recipecomposeapp.features.core.utils.FavoriteDataStoreManager
-import com.example.recipecomposeapp.features.core.utils.RecipeComposeAppTheme
+import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
+import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import kotlinx.coroutines.flow.flowOf
 
 @Composable

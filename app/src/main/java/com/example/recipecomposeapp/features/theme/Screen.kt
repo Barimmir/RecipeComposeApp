@@ -1,4 +1,4 @@
-package com.example.recipecomposeapp.features.core.utils
+package com.example.recipecomposeapp.features.theme
 
 sealed class Screen(val route: String) {
     object Categories : Screen("categories")

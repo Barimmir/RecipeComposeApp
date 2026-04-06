@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
-import com.example.recipecomposeapp.features.core.utils.RecipeComposeAppTheme
+import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeViewModel

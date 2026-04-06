@@ -1,4 +1,4 @@
-package com.example.recipecomposeapp.features.core.utils
+package com.example.recipecomposeapp.data.model
 
 import android.content.Context
 import androidx.datastore.core.DataStore
