@@ -1,6 +1,6 @@
 package com.example.recipecomposeapp.data.model
 
-import com.example.recipecomposeapp.ui.theme.recipes.model.IngredientUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientUiModel
 
 data class IngredientDto(
     val quantity: Float,

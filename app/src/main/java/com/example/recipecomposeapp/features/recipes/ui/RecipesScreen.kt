@@ -1,0 +1,86 @@
+package com.example.recipecomposeapp.features.recipes.ui
+
+import android.annotation.SuppressLint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.recipecomposeapp.features.core.utils.Dimens
+import com.example.recipecomposeapp.R
+import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
+import com.example.recipecomposeapp.features.core.ui.ScreenHeader
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeViewModel
+
+@Composable
+fun RecipesScreen(
+    categoryId: Int?,
+    modifier: Modifier = Modifier,
+    onRecipeClick: (Int, RecipeUiModel) -> Unit
+) {
+    val viewModel: RecipeViewModel = viewModel()
+    val recipes by viewModel.recipes.collectAsState()
+    LaunchedEffect(categoryId) {
+        if (categoryId != null) viewModel.loadRecipes(categoryId) else println("ERROR")
+    }
+    val categoryTitle = when (categoryId) {
+        0 -> "Бургеры"
+        1 -> "Десерты"
+        2 -> "Пицца"
+        3 -> "Рыба"
+        4 -> "Супы"
+        5 -> "Салаты"
+        else -> "Рецепты"
+    }
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
+        ScreenHeader(
+            title = categoryTitle.uppercase(),
+            imagePainter = painterResource(id = R.drawable.bcg_recipes_list),
+            contentDescription = "Шапка рецептов",
+            showShareButton = true,
+            onShareClick = {},
+            isFavorite = false,
+            showFavoriteButton = false,
+            onFavoriteClick = {}
+        )
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(Dimens.SIXTEEN_DP),
+            verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
+        ) {
+            items(items = recipes, key = { it.id }) { recipe ->
+                RecipeItem(
+                    recipe = recipe,
+                    onRecipeClick = onRecipeClick
+                )
+            }
+        }
+    }
+}
+
+@SuppressLint("ViewModelConstructorInComposable")
+@Preview(showBackground = true)
+@Composable
+fun RecipesScreenPreview() {
+    RecipeComposeAppTheme {
+        RecipesScreen(
+            categoryId = 0,
+            onRecipeClick = { _, _ -> })
+    }
+}

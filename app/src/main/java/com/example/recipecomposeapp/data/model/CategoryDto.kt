@@ -1,7 +1,7 @@
 package com.example.recipecomposeapp.data.model
 
-import com.example.recipecomposeapp.Constants
-import com.example.recipecomposeapp.ui.theme.categories.model.CategoryUiModel
+import com.example.recipecomposeapp.features.core.utils.Constants
+import com.example.recipecomposeapp.features.categories.presentation.model.CategoryUiModel
 
 data class CategoryDto(
     val id: Int,

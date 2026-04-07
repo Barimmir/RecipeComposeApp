@@ -1,7 +1,7 @@
 package com.example.recipecomposeapp.data.model
 
-import com.example.recipecomposeapp.Constants
-import com.example.recipecomposeapp.ui.theme.recipes.model.RecipeUiModel
+import com.example.recipecomposeapp.features.core.utils.Constants
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
 
 data class RecipeDto(
     val id: Int,
