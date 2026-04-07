@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,7 +37,15 @@ fun CategoriesScreen(
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
-        val categories by viewModel.categories.collectAsState()
+        val categories by viewModel.uiState.collectAsState()
+        when {
+            categories.isLoading -> {
+                Text("Ничё, потерпиш!")
+            }
+            categories.error != null -> {
+                Text("Ошибка, опять где-то запятой нету...")
+            }
+        }
         ScreenHeader(
             "Категории".uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_categories),
@@ -57,7 +66,7 @@ fun CategoriesScreen(
             horizontalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP),
             verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
         ) {
-            items(categories, key = { it.id }) { categories ->
+            items(categories.categories, key = { it.id }) { categories ->
                 CategoryItem(
                     id = categories.id,
                     title = categories.title,
