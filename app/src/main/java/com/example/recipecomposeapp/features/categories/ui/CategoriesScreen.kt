@@ -32,18 +32,15 @@ fun CategoriesScreen(
     viewModel: CategoriesViewModel,
     onCategoryClick: (CategoryUiModel) -> Unit
 ) {
+    val categories by viewModel.uiState.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
-        val categories by viewModel.uiState.collectAsState()
         when {
             categories.isLoading -> {
-                Text("Ничё, потерпиш!")
-            }
-            categories.error != null -> {
-                Text("Ошибка, опять где-то запятой нету...")
+                Text("Загрузка категорий...")
             }
         }
         ScreenHeader(
@@ -78,7 +75,9 @@ fun CategoriesScreen(
             }
         }
     }
+
 }
+
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)

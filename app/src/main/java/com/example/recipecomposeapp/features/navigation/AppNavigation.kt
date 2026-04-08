@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -62,7 +63,7 @@ fun AppNavigation(
         composable(route = Screen.Categories.route) {
             CategoriesScreen(
                 modifier = Modifier,
-                viewModel = CategoriesViewModel(),
+                viewModel = viewModel<CategoriesViewModel>(),
                 onCategoryClick = { category ->
                     navController.navigate(Screen.Recipes.createRoute(category.id))
                 }
@@ -114,7 +115,8 @@ fun AppNavigation(
                     )
                     navController.navigate(Screen.RecipeDetails.Base.createRoute(recipeId))
                 },
-                modifier = Modifier)
+                modifier = Modifier
+            )
         }
         composable(
             route = Screen.RecipeDetails.Base.route,

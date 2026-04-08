@@ -24,15 +24,20 @@ class CategoriesViewModel : ViewModel() {
             _uiState.update { currentState ->
                 currentState.copy(isLoading = true)
             }
-            val categoriesDto = repository.getCategories()
-            val categoriesList = categoriesDto.map { dto ->
-                dto.toUiModel()
-            }
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    categories = categoriesList
-                )
+            try {
+                val categoriesDto = repository.getCategories()
+                val categoriesList = categoriesDto.map { dto ->
+                    dto.toUiModel()
+                }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        categories = categoriesList
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false) }
+                e.printStackTrace()
             }
         }
     }
