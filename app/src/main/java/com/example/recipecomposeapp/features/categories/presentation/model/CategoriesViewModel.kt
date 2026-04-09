@@ -36,8 +36,7 @@ class CategoriesViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false) }
-                e.printStackTrace()
+                _uiState.update { it.copy(isLoading = false, error = e.message) }
             }
         }
     }

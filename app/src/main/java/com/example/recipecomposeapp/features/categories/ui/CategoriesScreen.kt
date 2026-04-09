@@ -24,14 +24,14 @@ import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
 import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesViewModel
-import com.example.recipecomposeapp.features.categories.presentation.model.CategoryUiModel
 
 @Composable
 fun CategoriesScreen(
     modifier: Modifier = Modifier,
     viewModel: CategoriesViewModel,
-    onCategoryClick: (CategoryUiModel) -> Unit
+    onCategoryClick: (Int, String, String) -> Unit
 ) {
+
     val categories by viewModel.uiState.collectAsState()
     Column(
         modifier = modifier
@@ -69,7 +69,13 @@ fun CategoriesScreen(
                     title = categories.title,
                     descriptionCategory = categories.description,
                     imageUrl = categories.imageUrl,
-                    onClick = { onCategoryClick(categories) },
+                    onClick = {
+                        onCategoryClick(
+                            categories.id,
+                            categories.title,
+                            categories.imageUrl
+                        )
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -87,7 +93,9 @@ fun CategoriesScreenPreview() {
         CategoriesScreen(
             viewModel = CategoriesViewModel(),
             modifier = Modifier,
-            onCategoryClick = {}
+            onCategoryClick = { id, title, imageUrl ->
+                println("Clicked: id=$id, title=$title, imageUrl=$imageUrl")
+            }
         )
     }
 }

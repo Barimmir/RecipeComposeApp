@@ -64,8 +64,8 @@ fun AppNavigation(
             CategoriesScreen(
                 modifier = Modifier,
                 viewModel = viewModel<CategoriesViewModel>(),
-                onCategoryClick = { category ->
-                    navController.navigate(Screen.Recipes.createRoute(category.id))
+                onCategoryClick = { id, title, imageUrl ->
+                    navController.navigate(Screen.Recipes.createRoute(id))
                 }
             )
         }
