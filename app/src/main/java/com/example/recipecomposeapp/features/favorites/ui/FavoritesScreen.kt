@@ -27,7 +27,7 @@ import com.example.recipecomposeapp.data.model.toUiModel
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
 import com.example.recipecomposeapp.features.recipes.ui.RecipeItem
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import kotlinx.coroutines.flow.map
 
@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.map
 fun FavoritesScreen(
     recipesRepository: RecipesRepositoryStub,
     favoriteDataStoreManager: FavoriteDataStoreManager,
-    onRecipeClick: (Int, RecipeUiModel) -> Unit,
+    onRecipeClick: (Int, RecipesUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val favoriteIdsFlow = favoriteDataStoreManager.getFavoriteIdsFlow()

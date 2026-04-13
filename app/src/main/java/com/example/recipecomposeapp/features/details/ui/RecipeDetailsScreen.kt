@@ -33,8 +33,8 @@ import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
-import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientUiModel
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientsUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -42,7 +42,7 @@ import kotlin.math.roundToInt
 @Composable
 fun RecipeDetailsScreen(
     recipeId: Int,
-    recipe: RecipeUiModel,
+    recipe: RecipesUiModel,
     favoriteDataStoreManager: FavoriteDataStoreManager,
     shareRecipe: (Context, Int, String) -> Unit,
 ) {
@@ -201,8 +201,8 @@ fun PortionsSlider(
 @Composable
 fun IngredientItem(
     index: Int,
-    ingredient: IngredientUiModel,
-    scaledIngredients: List<IngredientUiModel>,
+    ingredient: IngredientsUiModel,
+    scaledIngredients: List<IngredientsUiModel>,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -249,23 +249,23 @@ fun formatAmount(amount: Float): String {
 @Composable
 fun RecipeDetailsScreenPreview() {
     val sampleIngredients = listOf(
-        IngredientUiModel(
+        IngredientsUiModel(
             name = "Говяжья котлета",
             amount = 1.0f,
             unitOfMeasure = "шт"
         ),
-        IngredientUiModel(
+        IngredientsUiModel(
             name = "Булочка",
             amount = 1.0f,
             unitOfMeasure = "шт"
         ),
-        IngredientUiModel(
+        IngredientsUiModel(
             name = "Сыр",
             amount = 50.0f,
             unitOfMeasure = "г"
         )
     )
-    val sampleRecipe = RecipeUiModel(
+    val sampleRecipe = RecipesUiModel(
         id = 0,
         title = "Классический бургер",
         imageUrl = "file:///android_asset/burger_hamburger.png",

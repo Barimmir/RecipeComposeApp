@@ -1,7 +1,7 @@
 package com.example.recipecomposeapp.data.model
 
 import com.example.recipecomposeapp.features.core.utils.Constants
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
 
 data class RecipeDto(
     val id: Int,
@@ -11,7 +11,7 @@ data class RecipeDto(
     val imageUrl: String,
 )
 
-fun RecipeDto.toUiModel() = RecipeUiModel(
+fun RecipeDto.toUiModel() = RecipesUiModel(
     id = id,
     title = title,
     ingredients = ingredients.map { it.toUiModel() },
