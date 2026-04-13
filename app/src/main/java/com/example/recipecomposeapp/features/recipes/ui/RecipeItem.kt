@@ -19,13 +19,12 @@ import coil3.compose.AsyncImage
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
-
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
 
 @Composable
 fun RecipeItem(
-    recipe: RecipeUiModel,
-    onRecipeClick: (Int, RecipeUiModel) -> Unit,
+    recipe: RecipesUiModel,
+    onRecipeClick: (Int, RecipesUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -60,7 +59,7 @@ fun RecipeItem(
 @Preview(showBackground = true)
 @Composable
 fun RecipeItemPreview() {
-    val sampleRecipe = RecipeUiModel(
+    val sampleRecipe = RecipesUiModel(
         id = 0,
         title = "Классический бургер",
         imageUrl = "file:///android_asset/burger_hamburger.png",
@@ -72,10 +71,8 @@ fun RecipeItemPreview() {
     RecipeComposeAppTheme {
         RecipeItem(
             recipe = sampleRecipe,
-            onRecipeClick = { _, _ ->
-            },
+            onRecipeClick = { _, _ -> },
             modifier = Modifier.fillMaxWidth(0.9f)
         )
     }
 }
-

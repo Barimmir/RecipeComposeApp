@@ -19,7 +19,7 @@ import com.example.recipecomposeapp.features.navigation.AppNavigation
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.features.navigation.BottomNavigation
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
-import com.example.recipecomposeapp.features.theme.Screen
+import com.example.recipecomposeapp.features.navigation.Screen
 
 @Composable
 fun RecipesApp(deepLinkIntent: Intent?) {
