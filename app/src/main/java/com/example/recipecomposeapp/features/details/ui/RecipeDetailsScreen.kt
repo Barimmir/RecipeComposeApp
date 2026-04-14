@@ -3,6 +3,7 @@ package com.example.recipecomposeapp.features.details.ui
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,58 +12,105 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
+import com.example.recipecomposeapp.features.details.presentation.RecipeDetailsViewModel
 import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientsUiModel
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
-import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 fun RecipeDetailsScreen(
+    viewModel: RecipeDetailsViewModel,
     recipeId: Int,
-    recipe: RecipesUiModel,
-    favoriteDataStoreManager: FavoriteDataStoreManager,
     shareRecipe: (Context, Int, String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val isFavorite by favoriteDataStoreManager
-        .isFavoriteFlow(recipe.id)
-        .collectAsState(initial = false)
-    val coroutineScope = rememberCoroutineScope()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val scrollState = rememberScrollState()
-    val recipePainter = rememberAsyncImagePainter(recipe.imageUrl)
-    var currentPortions by rememberSaveable { mutableIntStateOf(1) }
-    val scaledIngredients = remember(currentPortions, recipe.ingredients) {
-        recipe.ingredients.map { ingredient ->
-            ingredient.copy(
-                amount = ingredient.amount * currentPortions
+
+    LaunchedEffect(recipeId) {
+        viewModel.loadRecipe(recipeId)
+    }
+    uiState.recipe?.let { recipe ->
+        RecipeDetailsContent(
+            recipe = recipe,
+            numberOfServings = uiState.numberOfServings,
+            scaledIngredients = uiState.scaledIngredients,
+            isLoading = uiState.isLoading,
+            error = uiState.error,
+            onPortionsChange = viewModel::updatePortions,
+            onFavoriteClick = viewModel::toggleFavorite,
+            onShareClick = { shareRecipe(context, recipe.id, recipe.title) },
+            onErrorDismiss = viewModel::clearError,
+            modifier = modifier
+        )
+    }
+
+    if (uiState.isLoading && uiState.recipe == null) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+
+    if (uiState.recipe == null && !uiState.isLoading && uiState.hasError) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(Dimens.SIXTEEN_DP),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = uiState.error ?: "Рецепт не найден",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.error
             )
         }
     }
+}
+
+@Composable
+private fun RecipeDetailsContent(
+    recipe: RecipesUiModel,
+    numberOfServings: Int,
+    scaledIngredients: List<IngredientsUiModel>,
+    isLoading: Boolean,
+    error: String?,
+    onPortionsChange: (Int) -> Unit,
+    onFavoriteClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onErrorDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val scrollState = rememberScrollState()
+    val recipePainter = rememberAsyncImagePainter(recipe.imageUrl)
+
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState),
@@ -73,43 +121,35 @@ fun RecipeDetailsScreen(
             imagePainter = recipePainter,
             contentDescription = "Заголовок рецептов",
             showShareButton = true,
-            onShareClick = { shareRecipe(context, recipe.id, recipe.title) },
-            isFavorite = isFavorite,
+            onShareClick = onShareClick,
+            isFavorite = recipe.isFavorite,
             showFavoriteButton = true,
-            onFavoriteClick = {
-                coroutineScope.launch {
-                    if (isFavorite) {
-                        favoriteDataStoreManager.removeFavorite(recipe.id)
-                    } else {
-                        favoriteDataStoreManager.addFavorite(recipe.id)
-                    }
-                }
-            }
+            onFavoriteClick = onFavoriteClick
         )
+
         Text(
             text = "Ингредиенты".uppercase(),
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(
-                horizontal = Dimens.SIXTEEN_DP
-            )
+            modifier = Modifier.padding(horizontal = Dimens.SIXTEEN_DP)
         )
+
         Text(
             text = pluralStringResource(
                 R.plurals.portions_count,
-                currentPortions,
-                currentPortions
+                numberOfServings,
+                numberOfServings
             ),
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = Dimens.SIXTEEN_DP)
         )
+
         PortionsSlider(
-            currentPortions = currentPortions,
-            onPortionsChange = { newPortion ->
-                currentPortions = newPortion
-            }
+            currentPortions = numberOfServings,
+            onPortionsChange = onPortionsChange
         )
+
         if (scaledIngredients.isNotEmpty()) {
             Surface(
                 modifier = Modifier
@@ -132,21 +172,15 @@ fun RecipeDetailsScreen(
                     }
                 }
             }
-        } else {
-            Text(
-                text = "Нет ингредиентов",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
+
         Text(
             text = "Способ приготовления".uppercase(),
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(
-                horizontal = Dimens.SIXTEEN_DP
-            )
+            modifier = Modifier.padding(horizontal = Dimens.SIXTEEN_DP)
         )
+
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -278,12 +312,16 @@ fun RecipeDetailsScreenPreview() {
         isFavorite = false
     )
     RecipeComposeAppTheme {
-        val context = LocalContext.current
-        RecipeDetailsScreen(
-            recipeId = 0,
+        RecipeDetailsContent(
             recipe = sampleRecipe,
-            shareRecipe = { _, _, _ -> },
-            favoriteDataStoreManager = FavoriteDataStoreManager(context)
+            numberOfServings = 1,
+            scaledIngredients = sampleIngredients,
+            isLoading = false,
+            error = null,
+            onPortionsChange = {},
+            onFavoriteClick = {},
+            onShareClick = {},
+            onErrorDismiss = {}
         )
     }
 }

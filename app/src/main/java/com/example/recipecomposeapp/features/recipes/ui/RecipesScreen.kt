@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.rememberAsyncImagePainter
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
@@ -26,7 +26,7 @@ fun RecipesScreen(
     onRecipeClick: (Int, RecipesUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -69,9 +69,13 @@ fun RecipesScreen(
                             text = "Ошибка: ${uiState.error}",
                             color = MaterialTheme.colorScheme.error
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Dimens.SIXTEEN_DP))
                         Button(onClick = { viewModel.refresh() }) {
                             Text("Повторить")
+                        }
+                        Spacer(modifier = Modifier.height(Dimens.EIGHT_DP))
+                        Button(onClick = { viewModel.clearError() }) {
+                            Text("Закрыть")
                         }
                     }
                 }
@@ -112,7 +116,7 @@ fun RecipesScreen(
 @Composable
 fun RecipesScreenPreview_Variant1() {
     RecipeComposeAppTheme {
-        // Мок-данные для превью
+        
         val mockRecipes = listOf(
             RecipesUiModel(
                 id = 1,
