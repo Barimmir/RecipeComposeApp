@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.rememberAsyncImagePainter
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
@@ -32,9 +33,14 @@ fun RecipesScreen(
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
     ) {
+        val imagePainter = rememberAsyncImagePainter(
+            model = uiState.categoryImageUrl,
+            placeholder = painterResource(R.drawable.bcg_recipes_list),
+            error = painterResource(R.drawable.bcg_recipes_list)
+        )
         ScreenHeader(
             title = uiState.categoryTitle.uppercase(),
-            imagePainter = painterResource(id = R.drawable.bcg_recipes_list),
+            imagePainter = imagePainter,
             contentDescription = "Шапка рецептов",
             showShareButton = true,
             onShareClick = {},

@@ -35,7 +35,7 @@ fun CategoriesScreen(
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
-        val categories by viewModel.categories.collectAsState()
+        val categories by viewModel.uiState.collectAsState()
         ScreenHeader(
             "Категории".uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_categories),
@@ -56,7 +56,7 @@ fun CategoriesScreen(
             horizontalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP),
             verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
         ) {
-            items(categories, key = { it.id }) { categories ->
+            items(categories.categories, key = { it.id }) { categories ->
                 CategoryItem(
                     id = categories.id,
                     title = categories.title,
