@@ -1,6 +1,6 @@
 package com.example.recipecomposeapp.data.model
 
-import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientsUiModel
 
 data class IngredientDto(
     val quantity: Float,
@@ -8,7 +8,7 @@ data class IngredientDto(
     val description: String,
 )
 
-fun IngredientDto.toUiModel() = IngredientUiModel(
+fun IngredientDto.toUiModel() = IngredientsUiModel(
     name = description,
     amount = quantity,
     unitOfMeasure = unitOfMeasure

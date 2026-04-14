@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -19,13 +19,12 @@ import com.example.recipecomposeapp.features.categories.presentation.model.Categ
 import com.example.recipecomposeapp.features.favorites.ui.FavoritesScreen
 import com.example.recipecomposeapp.features.recipes.ui.RecipesScreen
 import com.example.recipecomposeapp.features.details.ui.RecipeDetailsScreen
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
 import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.features.core.utils.shareRecipe
-import com.example.recipecomposeapp.features.theme.KEY_RECIPE_OBJECT
-import com.example.recipecomposeapp.features.theme.Screen
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesViewModel
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable
@@ -33,7 +32,7 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     deepLinkIntent: Intent? = null,
-    getRecipeById: (Int) -> RecipeUiModel?,
+    getRecipeById: (Int) -> RecipesUiModel?,
     favoriteDataStoreManager: FavoriteDataStoreManager
 ) {
     LaunchedEffect(deepLinkIntent) {
@@ -63,20 +62,32 @@ fun AppNavigation(
         composable(route = Screen.Categories.route) {
             CategoriesScreen(
                 modifier = Modifier,
-                viewModel = viewModel<CategoriesViewModel>(),
+                viewModel = CategoriesViewModel(),
                 onCategoryClick = { id, title, imageUrl ->
-                    navController.navigate(Screen.Recipes.createRoute(id))
+                    navController.navigate(Screen.Recipes.createRoute(id, title, imageUrl))
                 }
             )
         }
-
         composable(
             route = Screen.Recipes.route,
-            arguments = listOf(navArgument("categoryId") { type = NavType.IntType })
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.IntType },
+                navArgument("categoryTitle") { type = NavType.StringType },
+                navArgument("categoryImageUrl") { type = NavType.StringType })
         ) { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getInt("categoryId") ?: 0
+            val categoryTitle = backStackEntry.arguments?.getString("categoryTitle") ?: ""
+            val categoryImageUrl = backStackEntry.arguments?.getString("categoryImageUrl") ?: ""
+
+            val savedStateHandle = SavedStateHandle(
+                mapOf(
+                    "categoryId" to categoryId,
+                    "categoryTitle" to categoryTitle,
+                    "categoryImageUrl" to categoryImageUrl
+                )
+            )
             RecipesScreen(
-                categoryId = categoryId,
+                viewModel = RecipesViewModel(savedStateHandle),
                 onRecipeClick = { recipeId, recipe ->
                     navController.currentBackStackEntry?.savedStateHandle?.set(
                         KEY_RECIPE_OBJECT,
@@ -93,7 +104,7 @@ fun AppNavigation(
             val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
             val recipe = navController.previousBackStackEntry
                 ?.savedStateHandle
-                ?.get<RecipeUiModel>(KEY_RECIPE_OBJECT)
+                ?.get<RecipesUiModel>(KEY_RECIPE_OBJECT)
                 ?: return@composable Text("Recipe not found")
             RecipeDetailsScreen(
                 recipeId = recipeId,
@@ -117,23 +128,6 @@ fun AppNavigation(
                 },
                 modifier = Modifier
             )
-        }
-        composable(
-            route = Screen.RecipeDetails.Base.route,
-            arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
-            val recipe = getRecipeById(recipeId)
-            recipe?.let {
-                RecipeDetailsScreen(
-                    recipeId = recipeId,
-                    recipe = it,
-                    shareRecipe = { context, id, title ->
-                        shareRecipe(context, id, title)
-                    },
-                    favoriteDataStoreManager = favoriteDataStoreManager
-                )
-            }
         }
     }
 }

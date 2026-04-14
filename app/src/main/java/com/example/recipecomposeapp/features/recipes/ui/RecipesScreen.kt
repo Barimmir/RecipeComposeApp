@@ -2,56 +2,45 @@ package com.example.recipecomposeapp.features.recipes.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.dp
+import coil3.compose.rememberAsyncImagePainter
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeUiModel
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipeViewModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesViewModel
 
 @Composable
 fun RecipesScreen(
-    categoryId: Int?,
-    modifier: Modifier = Modifier,
-    onRecipeClick: (Int, RecipeUiModel) -> Unit
+    viewModel: RecipesViewModel,
+    onRecipeClick: (Int, RecipesUiModel) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val viewModel: RecipeViewModel = viewModel()
-    val recipes by viewModel.recipes.collectAsState()
-    LaunchedEffect(categoryId) {
-        if (categoryId != null) viewModel.loadRecipes(categoryId) else println("ERROR")
-    }
-    val categoryTitle = when (categoryId) {
-        0 -> "Бургеры"
-        1 -> "Десерты"
-        2 -> "Пицца"
-        3 -> "Рыба"
-        4 -> "Супы"
-        5 -> "Салаты"
-        else -> "Рецепты"
-    }
+    val uiState by viewModel.uiState.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
     ) {
+        val imagePainter = rememberAsyncImagePainter(
+            model = uiState.categoryImageUrl,
+            placeholder = painterResource(R.drawable.bcg_recipes_list),
+            error = painterResource(R.drawable.bcg_recipes_list)
+        )
         ScreenHeader(
-            title = categoryTitle.uppercase(),
-            imagePainter = painterResource(id = R.drawable.bcg_recipes_list),
+            title = uiState.categoryTitle.uppercase(),
+            imagePainter = imagePainter,
             contentDescription = "Шапка рецептов",
             showShareButton = true,
             onShareClick = {},
@@ -59,16 +48,60 @@ fun RecipesScreen(
             showFavoriteButton = false,
             onFavoriteClick = {}
         )
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(Dimens.SIXTEEN_DP),
-            verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
-        ) {
-            items(items = recipes, key = { it.id }) { recipe ->
-                RecipeItem(
-                    recipe = recipe,
-                    onRecipeClick = onRecipeClick
-                )
+
+        when {
+            uiState.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            uiState.hasError -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Ошибка: ${uiState.error}",
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = { viewModel.refresh() }) {
+                            Text("Повторить")
+                        }
+                    }
+                }
+            }
+
+            uiState.isEmpty -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Нет рецептов в этой категории")
+                }
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(Dimens.SIXTEEN_DP),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
+                ) {
+                    items(
+                        items = uiState.recipes,
+                        key = { it.id }
+                    ) { recipe ->
+                        RecipeItem(
+                            recipe = recipe,
+                            onRecipeClick = onRecipeClick
+                        )
+                    }
+                }
             }
         }
     }
@@ -77,10 +110,67 @@ fun RecipesScreen(
 @SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true)
 @Composable
-fun RecipesScreenPreview() {
+fun RecipesScreenPreview_Variant1() {
     RecipeComposeAppTheme {
-        RecipesScreen(
-            categoryId = 0,
-            onRecipeClick = { _, _ -> })
+        // Мок-данные для превью
+        val mockRecipes = listOf(
+            RecipesUiModel(
+                id = 1,
+                title = "Классический бургер",
+                imageUrl = "file:///android_asset/burger_hamburger.png",
+                ingredients = emptyList(),
+                method = "Приготовление...",
+                isFavorite = false
+            ),
+            RecipesUiModel(
+                id = 2,
+                title = "Пицца Маргарита",
+                imageUrl = "file:///android_asset/pizza.png",
+                ingredients = emptyList(),
+                method = "Приготовление...",
+                isFavorite = true
+            ),
+            RecipesUiModel(
+                id = 3,
+                title = "Чизкейк Нью-Йорк",
+                imageUrl = "file:///android_asset/cheesecake.png",
+                ingredients = emptyList(),
+                method = "Приготовление...",
+                isFavorite = false
+            )
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background)
+        ) {
+            ScreenHeader(
+                title = "БУРГЕРЫ",
+                imagePainter = painterResource(id = R.drawable.bcg_recipes_list),
+                contentDescription = "Шапка рецептов",
+                showShareButton = true,
+                onShareClick = {},
+                isFavorite = false,
+                showFavoriteButton = false,
+                onFavoriteClick = {}
+            )
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(Dimens.SIXTEEN_DP),
+                verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
+            ) {
+                items(
+                    items = mockRecipes,
+                    key = { it.id }
+                ) { recipe ->
+                    RecipeItem(
+                        recipe = recipe,
+                        onRecipeClick = { _, _ -> }
+                    )
+                }
+            }
+        }
     }
 }

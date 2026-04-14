@@ -6,11 +6,11 @@ import kotlinx.parcelize.Parcelize
 
 @Immutable
 @Parcelize
-data class RecipeUiModel(
+data class RecipesUiModel(
     val id: Int,
     val title: String,
     val imageUrl: String,
-    val ingredients: List<IngredientUiModel>,
+    val ingredients: List<IngredientsUiModel>,
     val method: String,
     val isFavorite: Boolean
 ) : Parcelable

@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Immutable
 @Parcelize
-data class IngredientUiModel(
+data class IngredientsUiModel(
     val name: String,
     val amount: Float,
     val unitOfMeasure: String
