@@ -55,7 +55,7 @@ fun BottomNavigation(
         }
         Button(
             onClick = onFavoriteClick,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(Dimens.WEIGHT_ONE_F),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Red,
                 contentColor = MaterialTheme.colorScheme.surface
