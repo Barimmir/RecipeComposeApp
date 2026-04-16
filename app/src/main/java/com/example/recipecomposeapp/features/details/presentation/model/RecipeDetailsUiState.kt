@@ -5,17 +5,11 @@ import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesU
 
 data class RecipeDetailsUiState(
     val recipe: RecipesUiModel? = null,
-    val numberOfServings: Int = 1,
+    val currentPortions: Int = 1,
+    val scaledIngredients: List<IngredientsUiModel> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null
 ) {
-    val scaledIngredients: List<IngredientsUiModel>
-        get() = recipe?.ingredients?.map { ingredient ->
-            ingredient.copy(
-                amount = ingredient.amount * numberOfServings
-            )
-        } ?: emptyList()
-
     val hasError: Boolean
         get() = error != null
 }

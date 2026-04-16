@@ -2,11 +2,13 @@ package com.example.recipecomposeapp.features.details.presentation
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
 import com.example.recipecomposeapp.data.model.toUiModel
 import com.example.recipecomposeapp.features.details.presentation.model.RecipeDetailsUiState
+import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientsUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class RecipeDetailsViewModel(
+    savedStateHandle: SavedStateHandle,
     application: Application,
     private val recipesRepository: RecipesRepositoryStub = RecipesRepositoryStub
 ) : AndroidViewModel(application) {
@@ -27,8 +30,12 @@ class RecipeDetailsViewModel(
 
     private var currentRecipeId: Int? = null
 
+    private val recipeId: Int = savedStateHandle.get<Int>("recipeId")
+        ?: throw IllegalArgumentException("recipeId is required")
+
     init {
         setupFavoriteSubscription()
+        loadRecipe(recipeId)
     }
 
     private fun setupFavoriteSubscription() {
@@ -63,6 +70,8 @@ class RecipeDetailsViewModel(
                     )
                     _uiState.value = _uiState.value.copy(
                         recipe = recipe,
+                        currentPortions = 1,
+                        scaledIngredients = recipe.ingredients,
                         isLoading = false
                     )
                 } else {
@@ -100,8 +109,33 @@ class RecipeDetailsViewModel(
     }
 
     fun updatePortions(newPortions: Int) {
-        _uiState.value = _uiState.value.copy(numberOfServings = newPortions)
+        val recipe = _uiState.value.recipe ?: return
+        val currentPortions = _uiState.value.currentPortions
+        val scaledIngredients =
+            calculateScaledIngredients(recipe.ingredients, currentPortions, newPortions)
+
+        _uiState.value = _uiState.value.copy(
+            currentPortions = newPortions,
+            scaledIngredients = scaledIngredients
+        )
     }
+
+    private fun calculateScaledIngredients(
+        ingredients: List<IngredientsUiModel>,
+        originalServings: Int,
+        newServings: Int
+    ): List<IngredientsUiModel> {
+        if (originalServings == newServings) return ingredients
+
+        val scaleFactor = newServings.toFloat() / originalServings
+
+        return ingredients.map { ingredient ->
+            ingredient.copy(
+                amount = ingredient.amount * scaleFactor
+            )
+        }
+    }
+
 
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
