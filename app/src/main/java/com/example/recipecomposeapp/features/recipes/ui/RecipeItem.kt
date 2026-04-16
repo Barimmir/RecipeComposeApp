@@ -61,10 +61,10 @@ fun RecipeItem(
 fun RecipeItemPreview() {
     val sampleRecipe = RecipesUiModel(
         id = 0,
-        title = "Классический бургер",
+        title = "Classic Burger",
         imageUrl = "file:///android_asset/burger_hamburger.png",
         ingredients = emptyList(),
-        method = "Приготовление...",
+        method = "Cooking...",
         isFavorite = false
     )
 
