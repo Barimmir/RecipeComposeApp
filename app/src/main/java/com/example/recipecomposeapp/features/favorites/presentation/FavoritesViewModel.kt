@@ -10,9 +10,11 @@ import com.example.recipecomposeapp.features.favorites.presentation.model.Favori
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onStart
 
 class FavoritesViewModel(
     application: Application,
@@ -26,34 +28,26 @@ class FavoritesViewModel(
 
     init {
         favoriteDataStoreManager.getFavoriteIdsFlow()
-            .onEach { favoriteIds ->
-                loadFavoriteRecipes(favoriteIds)
+            .map { favoriteIds ->
+                favoriteIds.mapNotNull { id -> 
+                    id.toIntOrNull()?.let { recipesRepository.getRecipeById(it)?.toUiModel() }
+                }
             }
-            .launchIn(viewModelScope)
-    }
-
-    private fun loadFavoriteRecipes(favoriteIds: Set<String>) {
-        _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-
-        viewModelScope.launch {
-            try {
-                val recipes = favoriteIds.mapNotNull { id ->
-                    val intId = id.toIntOrNull()
-                    intId?.let { recipesRepository.getRecipeById(it) }
-                }.map { it.toUiModel() }
-
-                _uiState.value = _uiState.value.copy(
-                    favoriteRecipes = recipes,
-                    isLoading = false
-                )
-            } catch (e: Exception) {
+            .onStart { 
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            }
+            .onEach { recipes ->
+                _uiState.value = _uiState.value.copy(favoriteRecipes = recipes, isLoading = false)
+            }
+            .catch { e ->
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = "Ошибка загрузки избранных рецептов: ${e.message}"
                 )
             }
-        }
+            .launchIn(viewModelScope)
     }
+
 
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
