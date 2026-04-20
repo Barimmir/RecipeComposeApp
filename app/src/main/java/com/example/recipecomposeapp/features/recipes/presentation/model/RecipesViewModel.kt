@@ -84,7 +84,7 @@ class RecipesViewModel(
             try {
                 val recipesDto = repository.getRecipesByCategoryId(categoryId)
                 val favoriteIds = favoriteDataStoreManager.getFavoriteIdsFlow().first()
-                
+
                 val recipesList = recipesDto.map { dto ->
                     dto.toUiModel().copy(
                         isFavorite = favoriteIds.contains(dto.id.toString())
@@ -113,7 +113,7 @@ class RecipesViewModel(
     fun refresh() {
         loadRecipes()
     }
-        
+
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }

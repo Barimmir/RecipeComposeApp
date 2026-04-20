@@ -3,7 +3,6 @@ package com.example.recipecomposeapp.features.navigation
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Intent
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.delay
@@ -102,11 +101,7 @@ fun AppNavigation(
             )
             RecipesScreen(
                 viewModel = recipesViewModel,
-                onRecipeClick = { recipeId, recipe ->
-                    navController.currentBackStackEntry?.savedStateHandle?.set(
-                        KEY_RECIPE_OBJECT,
-                        recipe
-                    )
+                onRecipeClick = { recipeId, _ ->
                     navController.navigate(Screen.RecipeDetails.Base.createRoute(recipeId))
                 }
             )
@@ -115,24 +110,19 @@ fun AppNavigation(
             route = Screen.RecipeDetails.Base.route,
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
-            val recipe = navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.get<RecipesUiModel>(KEY_RECIPE_OBJECT)
-                ?: return@composable Text("Recipe not found")
             val context = LocalContext.current
             val application = context.applicationContext as Application
+            val savedStateHandle = backStackEntry.savedStateHandle
             val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel(
                 factory = object : androidx.lifecycle.ViewModelProvider.Factory {
                     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
                         @Suppress("UNCHECKED_CAST")
-                        return RecipeDetailsViewModel(application) as T
+                        return RecipeDetailsViewModel(savedStateHandle, application) as T
                     }
                 }
             )
             RecipeDetailsScreen(
                 viewModel = recipeDetailsViewModel,
-                recipeId = recipeId,
                 shareRecipe = { context, id, title ->
                     shareRecipe(context, id, title)
                 }
@@ -151,11 +141,7 @@ fun AppNavigation(
             )
             FavoritesScreen(
                 viewModel = favoritesViewModel,
-                onRecipeClick = { recipeId, recipe ->
-                    navController.currentBackStackEntry?.savedStateHandle?.set(
-                        KEY_RECIPE_OBJECT,
-                        recipe
-                    )
+                onRecipeClick = { recipeId, _ ->
                     navController.navigate(Screen.RecipeDetails.Base.createRoute(recipeId))
                 },
                 modifier = Modifier

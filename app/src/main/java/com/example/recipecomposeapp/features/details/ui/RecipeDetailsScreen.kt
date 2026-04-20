@@ -20,7 +20,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,20 +39,16 @@ import kotlin.math.roundToInt
 @Composable
 fun RecipeDetailsScreen(
     viewModel: RecipeDetailsViewModel,
-    recipeId: Int,
     shareRecipe: (Context, Int, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    LaunchedEffect(recipeId) {
-        viewModel.loadRecipe(recipeId)
-    }
     uiState.recipe?.let { recipe ->
         RecipeDetailsContent(
             recipe = recipe,
-            numberOfServings = uiState.numberOfServings,
+            numberOfServings = uiState.currentPortions,
             scaledIngredients = uiState.scaledIngredients,
             isLoading = uiState.isLoading,
             error = uiState.error,
