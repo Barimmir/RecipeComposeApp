@@ -2,17 +2,23 @@ package com.example.recipecomposeapp.features.core.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.example.recipecomposeapp.data.model.CategoryDto
 import com.example.recipecomposeapp.data.model.FavoritePrefsManager
+import kotlinx.serialization.json.Json
+import java.net.HttpURLConnection
+import java.net.URL
 
 class MainActivity : ComponentActivity() {
     private var deepLinkIntent by mutableStateOf<Intent?>(null)
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.i("!!!","Метод onCreate() выполняется на потоке: ${Thread.currentThread().name}")
         super.onCreate(savedInstanceState)
         FavoritePrefsManager.init(this)
         intent?.data?.let {
@@ -22,6 +28,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             RecipesApp(deepLinkIntent = deepLinkIntent)
         }
+
+        val thread = Thread{
+            Log.i("!!!","Выполняю запрос на потоке: ${Thread.currentThread().name}")
+            val url = URL("https://recipes.androidsprint.ru/api/category")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.content
+            Log.i("!!!","${connection.responseMessage}")
+            Log.i("!!!","${connection.responseCode}")
+            val body = connection.getInputStream().bufferedReader().readText()
+            Log.i("!!!", "Body: $body")
+
+            val json = Json{ignoreUnknownKeys = true}
+
+            val catogoryById = json.decodeFromString<List<CategoryDto>>(body).map {
+                Log.i("!!!", "ID: ${it.id}\nName: ${it.title}")
+            }
+        }
+        thread.start()
     }
 
     override fun onNewIntent(intent: Intent) {
