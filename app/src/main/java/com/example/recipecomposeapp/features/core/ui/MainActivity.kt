@@ -14,10 +14,14 @@ import com.example.recipecomposeapp.data.model.FavoritePrefsManager
 import kotlinx.serialization.json.Json
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
     private var deepLinkIntent by mutableStateOf<Intent?>(null)
+    private val threadPool: ExecutorService = Executors.newFixedThreadPool(10)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         Log.i("!!!", "Метод onCreate() выполняется на потоке: ${Thread.currentThread().name}")
         super.onCreate(savedInstanceState)
         FavoritePrefsManager.init(this)
@@ -29,7 +33,8 @@ class MainActivity : ComponentActivity() {
             RecipesApp(deepLinkIntent = deepLinkIntent)
         }
 
-        val thread = Thread {
+
+        threadPool.execute {
             try {
                 var connection: HttpURLConnection? = null
                 try {
@@ -44,9 +49,34 @@ class MainActivity : ComponentActivity() {
 
                     val json = Json { ignoreUnknownKeys = true }
 
-                    val categoryById = json.decodeFromString<List<CategoryDto>>(body).map {
-                        Log.i("!!!", "ID: ${it.id}\nName: ${it.title}")
+                    val categories = json.decodeFromString<List<CategoryDto>>(body)
+                    Log.i("!!!", "Получено категорий: ${categories.size}")
+                    categories.forEach { category ->
+                        threadPool.execute {
+                            var recipeConnection: HttpURLConnection? = null
+                            try {
+                                Log.i(
+                                    "!!!",
+                                    "Выполняю запрос рецептов для категории ${category.title}: ${Thread.currentThread().name}"
+                                )
+                                val recipeUrl =
+                                    URL("https://recipes.androidsprint.ru/api/category/${category.id}/recipes")
+                                recipeConnection = recipeUrl.openConnection() as HttpURLConnection
+                                recipeConnection.connect()
+                                val recipeBody = recipeConnection.getInputStream().bufferedReader()
+                                    .use { it.readText() }
+                                Log.i(
+                                    "!!!",
+                                    "Получено рецептов для категории ${category.title}: ${recipeBody.length} "
+                                )
+                            } catch (e: Exception) {
+                                Log.i("!!!", "${e.message}")
+                            } finally {
+                                recipeConnection?.disconnect()
+                            }
+                        }
                     }
+
                 } catch (e: Exception) {
                     Log.i("!!!", "${e.message}")
                 } finally {
@@ -56,7 +86,6 @@ class MainActivity : ComponentActivity() {
                 Log.i("!!!", "${e.message}")
             }
         }
-        thread.start()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -65,5 +94,10 @@ class MainActivity : ComponentActivity() {
             deepLinkIntent = intent
         }
         setIntent(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        threadPool.shutdown()
     }
 }
