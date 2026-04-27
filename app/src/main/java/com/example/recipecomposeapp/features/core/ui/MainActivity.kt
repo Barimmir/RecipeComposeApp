@@ -9,19 +9,27 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.recipecomposeapp.data.model.CategoryDto
 import com.example.recipecomposeapp.data.model.FavoritePrefsManager
+import com.example.recipecomposeapp.features.core.utils.Constants
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import kotlin.concurrent.thread
+import okhttp3.MediaType.Companion.toMediaType
+import retrofit2.Retrofit
 
 class MainActivity : ComponentActivity() {
     private var deepLinkIntent by mutableStateOf<Intent?>(null)
-    private val threadPool: ExecutorService = Executors.newFixedThreadPool(10)
-    private val okHttpClient = OkHttpClient()
+    private val jsonConverter = Json.asConverterFactory("application/json".toMediaType())
+    private val retrofit: Retrofit = Retrofit.Builder()
+        .baseUrl(Constants.BASE_URL)
+        .addConverterFactory(jsonConverter)
+        .build()
+    private val apiService: RecipesApiService = retrofit.create(RecipesApiService::class.java)
+
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         Log.i("!!!", "Метод onCreate() выполняется на потоке: ${Thread.currentThread().name}")
@@ -34,44 +42,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             RecipesApp(deepLinkIntent = deepLinkIntent)
         }
-        thread {
+        GlobalScope.launch(Dispatchers.IO) {
             try {
                 try {
                     Log.i("!!!", "Выполняю запрос на потоке: ${Thread.currentThread().name}")
+                    val categories = apiService.getCategories()
+                    Log.i("!!!", categories.toString())
+                    categories.forEach { category ->
+                        GlobalScope.launch(Dispatchers.IO) {
+                            try {
+                                Log.i(
+                                    "!!!",
+                                    "Выполняю запрос рецептов для категории ${category.title}: ${Thread.currentThread().name}"
+                                )
+                                val recipesCall = apiService.getRecipesByCategory(category.id)
+                                Log.i("!!!", "${recipesCall.size}")
 
-                    val request = Request
-                        .Builder()
-                        .url("https://recipes.androidsprint.ru/api/category")
-                        .build()
-                    okHttpClient.newCall(request).execute().use { response ->
-                        val responseBody = response.body.string()
-                        Log.i("!!!", response.message)
-                        Log.i("!!!", "${response.code}")
-                        Log.i("!!!", "Body: $responseBody")
-                        val json = Json { ignoreUnknownKeys = true }
-                        val categories =
-                            json.decodeFromString<List<CategoryDto>>(responseBody)
-                        Log.i("!!!", "Получено категорий: ${categories.size}")
-                        categories.forEach { category ->
-                            thread {
-                                try {
-                                    Log.i(
-                                        "!!!",
-                                        "Выполняю запрос рецептов для категории ${category.title}: ${Thread.currentThread().name}"
-                                    )
-                                    val requestRecipes = Request
-                                        .Builder()
-                                        .url("https://recipes.androidsprint.ru/api/category/${category.id}/recipes")
-                                        .build()
-                                    okHttpClient.newCall(requestRecipes).execute().use { response ->
-                                        Log.i(
-                                            "!!!",
-                                            "Получено рецептов для категории ${category.title}: ${response.body.string().length} "
-                                        )
-                                    }
-                                } catch (e: Exception) {
-                                    Log.i("!!!", "${e.message}")
-                                }
+                            } catch (e: Exception) {
+                                Log.i("!!!", "${e.message}")
                             }
                         }
                     }
@@ -94,6 +82,5 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        threadPool.shutdown()
     }
 }

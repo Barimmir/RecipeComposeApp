@@ -2,7 +2,9 @@ package com.example.recipecomposeapp.data.model
 
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class RecipeDto(
     val id: Int,
     val title: String,
