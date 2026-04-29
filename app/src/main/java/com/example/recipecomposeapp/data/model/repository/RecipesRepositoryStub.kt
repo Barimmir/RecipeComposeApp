@@ -3,9 +3,7 @@ package com.example.recipecomposeapp.data.model.repository
 import com.example.recipecomposeapp.data.model.CategoryDto
 import com.example.recipecomposeapp.data.model.IngredientDto
 import com.example.recipecomposeapp.data.model.RecipeDto
-import kotlinx.serialization.Serializable
 
-@Serializable
 object RecipesRepositoryStub {
     private val categoryList = listOf(
         CategoryDto(

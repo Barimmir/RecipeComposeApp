@@ -9,12 +9,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.lifecycleScope
 import com.example.recipecomposeapp.data.model.FavoritePrefsManager
+import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -42,14 +43,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             RecipesApp(deepLinkIntent = deepLinkIntent)
         }
-        GlobalScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 try {
                     Log.i("!!!", "Выполняю запрос на потоке: ${Thread.currentThread().name}")
                     val categories = apiService.getCategories()
                     Log.i("!!!", categories.toString())
                     categories.forEach { category ->
-                        GlobalScope.launch(Dispatchers.IO) {
+                        launch(Dispatchers.IO) {
                             try {
                                 Log.i(
                                     "!!!",
