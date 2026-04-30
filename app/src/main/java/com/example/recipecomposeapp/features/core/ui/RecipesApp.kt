@@ -17,12 +17,17 @@ import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
 import com.example.recipecomposeapp.data.model.toUiModel
 import com.example.recipecomposeapp.features.navigation.AppNavigation
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
+import com.example.recipecomposeapp.data.model.RecipeDto
+import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.navigation.BottomNavigation
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.navigation.Screen
 
 @Composable
-fun RecipesApp(deepLinkIntent: Intent?) {
+fun RecipesApp(
+    deepLinkIntent: Intent?,
+    apiService: RecipesApiService
+) {
     val navController = rememberNavController()
     val context = LocalContext.current
     val favoriteManager = remember { FavoriteDataStoreManager(context) }
@@ -63,9 +68,12 @@ fun RecipesApp(deepLinkIntent: Intent?) {
                         navController = navController,
                         deepLinkIntent = deepLinkIntent,
                         getRecipeById = { recipeId ->
-                            RecipesRepositoryStub.getRecipeById(recipeId)?.toUiModel()
+                            kotlinx.coroutines.runBlocking {
+                                RecipesRepositoryStub.getRecipe(recipeId)?.toUiModel()
+                            }
                         },
-                        favoriteDataStoreManager = favoriteManager
+                        favoriteDataStoreManager = favoriteManager,
+                        apiService = apiService
                     )
                 }
             }
@@ -77,8 +85,21 @@ fun RecipesApp(deepLinkIntent: Intent?) {
 @Composable
 fun RecipesAppPreview() {
     RecipeComposeAppTheme {
+        val mockApiService = object : RecipesApiService {
+            override suspend fun getCategories() = RecipesRepositoryStub.getCategories()
+            override suspend fun getRecipesByCategory(categoryId: Int) = 
+                RecipesRepositoryStub.getRecipesByCategory(categoryId)
+            override suspend fun getRecipe(recipeId: Int): RecipeDto {
+                return RecipesRepositoryStub.getRecipe(recipeId) 
+                    ?: throw IllegalArgumentException("Recipe not found")
+            }
+        }
+        
         Surface {
-            RecipesApp(null)
+            RecipesApp(
+                deepLinkIntent = null,
+                apiService = mockApiService
+            )
         }
     }
 }

@@ -4,7 +4,7 @@ import com.example.recipecomposeapp.data.model.CategoryDto
 import com.example.recipecomposeapp.data.model.IngredientDto
 import com.example.recipecomposeapp.data.model.RecipeDto
 
-object RecipesRepositoryStub {
+object RecipesRepositoryStub : RecipesRepository {
     private val categoryList = listOf(
         CategoryDto(
             0,
@@ -141,18 +141,18 @@ object RecipesRepositoryStub {
     )
     private val allRecipes = burgerRecipesList
 
-    fun getCategories(): List<CategoryDto> {
+    override suspend fun getCategories(): List<CategoryDto> {
         return categoryList
     }
 
-    fun getRecipesByCategoryId(categoryId: Int): List<RecipeDto> {
+    override suspend fun getRecipesByCategory(categoryId: Int): List<RecipeDto> {
         return when (categoryId) {
             0 -> burgerRecipesList
             else -> emptyList()
         }
     }
 
-    fun getRecipeById(recipeId: Int): RecipeDto? {
+    override suspend fun getRecipe(recipeId: Int): RecipeDto? {
         return allRecipes.find { it.id == recipeId }
     }
 }

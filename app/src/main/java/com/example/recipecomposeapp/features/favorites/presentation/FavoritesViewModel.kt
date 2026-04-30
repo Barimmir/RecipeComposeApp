@@ -30,7 +30,7 @@ class FavoritesViewModel(
         favoriteDataStoreManager.getFavoriteIdsFlow()
             .map { favoriteIds ->
                 favoriteIds.mapNotNull { id -> 
-                    id.toIntOrNull()?.let { recipesRepository.getRecipeById(it)?.toUiModel() }
+                    id.toIntOrNull()?.let { recipesRepository.getRecipe(it)?.toUiModel() }
                 }
             }
             .onStart { 
