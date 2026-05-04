@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
-import com.example.recipecomposeapp.data.model.toUiModel
 import com.example.recipecomposeapp.features.navigation.AppNavigation
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.RecipeDto
@@ -67,11 +66,6 @@ fun RecipesApp(
                     AppNavigation(
                         navController = navController,
                         deepLinkIntent = deepLinkIntent,
-                        getRecipeById = { recipeId ->
-                            kotlinx.coroutines.runBlocking {
-                                RecipesRepositoryStub.getRecipe(recipeId)?.toUiModel()
-                            }
-                        },
                         favoriteDataStoreManager = favoriteManager,
                         apiService = apiService
                     )

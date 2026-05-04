@@ -22,7 +22,6 @@ import com.example.recipecomposeapp.features.categories.presentation.model.Categ
 import com.example.recipecomposeapp.features.favorites.ui.FavoritesScreen
 import com.example.recipecomposeapp.features.recipes.ui.RecipesScreen
 import com.example.recipecomposeapp.features.details.ui.RecipeDetailsScreen
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryImpl
@@ -38,7 +37,6 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     deepLinkIntent: Intent? = null,
-    getRecipeById: (Int) -> RecipesUiModel?,
     favoriteDataStoreManager: FavoriteDataStoreManager,
     apiService: RecipesApiService
 ) {
@@ -70,7 +68,7 @@ fun AppNavigation(
         composable(route = Screen.Categories.route) {
             CategoriesScreen(
                 modifier = Modifier,
-                viewModel = CategoriesViewModel(repository),
+                viewModel = remember { CategoriesViewModel(repository) },
                 onCategoryClick = { id, title, imageUrl ->
                     navController.navigate(Screen.Recipes.createRoute(id, title, imageUrl))
                 }
