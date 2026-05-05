@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
-import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
+import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.data.model.toUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,9 +20,9 @@ import java.net.URLDecoder
 
 class RecipesViewModel(
     application: Application,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val repository: RecipesRepository
 ) : AndroidViewModel(application) {
-    private val repository = RecipesRepositoryStub
     private val favoriteDataStoreManager = FavoriteDataStoreManager(application)
 
     private val categoryId: Int = savedStateHandle["categoryId"] ?: 0
@@ -82,7 +82,7 @@ class RecipesViewModel(
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                val recipesDto = repository.getRecipesByCategoryId(categoryId)
+                val recipesDto = repository.getRecipesByCategory(categoryId)
                 val favoriteIds = favoriteDataStoreManager.getFavoriteIdsFlow().first()
 
                 val recipesList = recipesDto.map { dto ->

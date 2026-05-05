@@ -41,7 +41,10 @@ class MainActivity : ComponentActivity() {
         }
         enableEdgeToEdge()
         setContent {
-            RecipesApp(deepLinkIntent = deepLinkIntent)
+            RecipesApp(
+                deepLinkIntent = deepLinkIntent,
+                apiService = apiService
+            )
         }
         lifecycleScope.launch(Dispatchers.IO) {
             try {

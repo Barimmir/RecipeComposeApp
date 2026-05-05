@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,9 +22,10 @@ import com.example.recipecomposeapp.features.categories.presentation.model.Categ
 import com.example.recipecomposeapp.features.favorites.ui.FavoritesScreen
 import com.example.recipecomposeapp.features.recipes.ui.RecipesScreen
 import com.example.recipecomposeapp.features.details.ui.RecipeDetailsScreen
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
+import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryImpl
+import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.core.utils.shareRecipe
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesViewModel
 import com.example.recipecomposeapp.features.details.presentation.RecipeDetailsViewModel
@@ -35,9 +37,10 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     deepLinkIntent: Intent? = null,
-    getRecipeById: (Int) -> RecipesUiModel?,
-    favoriteDataStoreManager: FavoriteDataStoreManager
+    favoriteDataStoreManager: FavoriteDataStoreManager,
+    apiService: RecipesApiService
 ) {
+    val repository = remember { RecipesRepositoryImpl(apiService) }
     LaunchedEffect(deepLinkIntent) {
         deepLinkIntent?.data?.let { uri ->
             val recipeId: Int? = when (uri.scheme) {
@@ -65,7 +68,7 @@ fun AppNavigation(
         composable(route = Screen.Categories.route) {
             CategoriesScreen(
                 modifier = Modifier,
-                viewModel = CategoriesViewModel(),
+                viewModel = remember { CategoriesViewModel(repository) },
                 onCategoryClick = { id, title, imageUrl ->
                     navController.navigate(Screen.Recipes.createRoute(id, title, imageUrl))
                 }
@@ -95,7 +98,7 @@ fun AppNavigation(
                 factory = object : androidx.lifecycle.ViewModelProvider.Factory {
                     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
                         @Suppress("UNCHECKED_CAST")
-                        return RecipesViewModel(application, savedStateHandle) as T
+                        return RecipesViewModel(application, savedStateHandle, repository) as T
                     }
                 }
             )
@@ -117,7 +120,11 @@ fun AppNavigation(
                 factory = object : androidx.lifecycle.ViewModelProvider.Factory {
                     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
                         @Suppress("UNCHECKED_CAST")
-                        return RecipeDetailsViewModel(savedStateHandle, application) as T
+                        return RecipeDetailsViewModel(
+                            savedStateHandle,
+                            application,
+                            repository
+                        ) as T
                     }
                 }
             )

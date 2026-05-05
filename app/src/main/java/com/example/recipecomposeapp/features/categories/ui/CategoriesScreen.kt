@@ -23,6 +23,7 @@ import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
 import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesViewModel
+import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
 
 @Composable
 fun CategoriesScreen(
@@ -30,12 +31,12 @@ fun CategoriesScreen(
     viewModel: CategoriesViewModel,
     onCategoryClick: (Int, String, String) -> Unit
 ) {
+    val categories by viewModel.uiState.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
-        val categories by viewModel.uiState.collectAsState()
         ScreenHeader(
             "Категории".uppercase(),
             imagePainter = painterResource(id = R.drawable.bcg_categories),
@@ -82,7 +83,7 @@ fun CategoriesScreen(
 fun CategoriesScreenPreview() {
     RecipeComposeAppTheme {
         CategoriesScreen(
-            viewModel = CategoriesViewModel(),
+            viewModel = CategoriesViewModel(RecipesRepositoryStub),
             modifier = Modifier,
             onCategoryClick = { _, _, _ -> }
         )

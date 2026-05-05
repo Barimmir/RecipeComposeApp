@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
-import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
+import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.data.model.toUiModel
 import com.example.recipecomposeapp.features.details.presentation.model.RecipeDetailsUiState
 import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientsUiModel
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class RecipeDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     application: Application,
-    private val recipesRepository: RecipesRepositoryStub = RecipesRepositoryStub
+    private val repository: RecipesRepository
 ) : AndroidViewModel(application) {
 
     private val favoriteDataStoreManager = FavoriteDataStoreManager(application)
@@ -62,7 +62,7 @@ class RecipeDetailsViewModel(
 
         viewModelScope.launch {
             try {
-                val recipeDto = recipesRepository.getRecipeById(recipeId)
+                val recipeDto = repository.getRecipe(recipeId)
                 if (recipeDto != null) {
                     val favoriteIds = favoriteDataStoreManager.getFavoriteIdsFlow().first()
                     val recipe = recipeDto.toUiModel().copy(
