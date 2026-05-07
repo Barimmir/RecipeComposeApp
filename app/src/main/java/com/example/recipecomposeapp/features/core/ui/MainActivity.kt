@@ -1,40 +1,52 @@
 package com.example.recipecomposeapp.features.core.ui
 
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.lifecycleScope
 import com.example.recipecomposeapp.data.model.FavoritePrefsManager
 import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     private var deepLinkIntent by mutableStateOf<Intent?>(null)
-    private val jsonConverter = Json.asConverterFactory("application/json".toMediaType())
-    private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL)
-        .addConverterFactory(jsonConverter)
-        .build()
-    private val apiService: RecipesApiService = retrofit.create(RecipesApiService::class.java)
+    private lateinit var apiService: RecipesApiService
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        Log.i("!!!", "Метод onCreate() выполняется на потоке: ${Thread.currentThread().name}")
         super.onCreate(savedInstanceState)
+        
+        val jsonConverter = Json.asConverterFactory("application/json".toMediaType())
+        val logging = HttpLoggingInterceptor().apply {
+            level = if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
+        val client = OkHttpClient.Builder()
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(logging)
+            .build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(jsonConverter)
+            .client(client)
+            .build()
+        apiService = retrofit.create(RecipesApiService::class.java)
         FavoritePrefsManager.init(this)
         intent?.data?.let {
             deepLinkIntent = intent
@@ -45,34 +57,6 @@ class MainActivity : ComponentActivity() {
                 deepLinkIntent = deepLinkIntent,
                 apiService = apiService
             )
-        }
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                try {
-                    Log.i("!!!", "Выполняю запрос на потоке: ${Thread.currentThread().name}")
-                    val categories = apiService.getCategories()
-                    Log.i("!!!", categories.toString())
-                    categories.forEach { category ->
-                        launch(Dispatchers.IO) {
-                            try {
-                                Log.i(
-                                    "!!!",
-                                    "Выполняю запрос рецептов для категории ${category.title}: ${Thread.currentThread().name}"
-                                )
-                                val recipesCall = apiService.getRecipesByCategory(category.id)
-                                Log.i("!!!", "${recipesCall.size}")
-
-                            } catch (e: Exception) {
-                                Log.i("!!!", "${e.message}")
-                            }
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.i("!!!", "${e.message}")
-                }
-            } catch (e: Exception) {
-                Log.i("!!!", "${e.message}")
-            }
         }
     }
 
