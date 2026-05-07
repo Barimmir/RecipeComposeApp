@@ -12,12 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import coil3.compose.AsyncImage
+import com.example.recipecomposeapp.features.core.ui.RecipeImage
 import com.example.recipecomposeapp.features.core.utils.Dimens
-import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
 
@@ -35,13 +33,11 @@ fun RecipeItem(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
         ) {
-            AsyncImage(
-                model = recipe.imageUrl,
+            RecipeImage(
+                imageUrl = recipe.imageUrl,
                 contentDescription = recipe.title,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.img_placeholder),
-                error = painterResource(R.drawable.img_error)
+                contentScale = ContentScale.Crop
             )
             Text(
                 text = recipe.title,
