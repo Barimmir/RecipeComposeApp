@@ -1,16 +1,15 @@
 package com.example.recipecomposeapp.features.core.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import androidx.compose.ui.res.painterResource
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -24,11 +23,14 @@ fun RecipeImage(
     contentScale: ContentScale = ContentScale.Crop,
     crossfadeDuration: Int = 300
 ) {
+    val context = LocalContext.current
     SubcomposeAsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(imageUrl)
-            .crossfade(crossfadeDuration)
-            .build(),
+        model = remember(imageUrl) {
+            ImageRequest.Builder(context)
+                .data(imageUrl)
+                .crossfade(crossfadeDuration)
+                .build()
+        },
         contentDescription = contentDescription,
         modifier = modifier,
         contentScale = contentScale,
@@ -37,19 +39,18 @@ fun RecipeImage(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp)
+                Image(
+                    painter = painterResource(R.drawable.img_placeholder),
+                    contentDescription = "Loading placeholder",
+                    modifier = modifier.fillMaxSize()
                 )
             }
         },
         error = {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(R.drawable.img_error)
-                    .build(),
+            Image(
+                painter = painterResource(R.drawable.img_error),
                 contentDescription = "Error loading image",
-                modifier = modifier,
-                contentScale = contentScale
+                modifier = modifier.fillMaxSize()
             )
         }
     )
