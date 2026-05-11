@@ -15,12 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import coil3.compose.AsyncImage
+import com.example.recipecomposeapp.features.core.ui.RecipeImage
 import com.example.recipecomposeapp.features.core.utils.Dimens
-import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 
 @Composable
@@ -47,15 +45,13 @@ fun CategoryItem(
                 .background(MaterialTheme.colorScheme.surface),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AsyncImage(
-                model = imageUrl,
+            RecipeImage(
+                imageUrl = imageUrl,
                 contentDescription = title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Dimens.ONE_HUNDRED_TWENTY_DP),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.img_placeholder),
-                error = painterResource(R.drawable.img_error)
+                contentScale = ContentScale.Crop
             )
             Text(
                 text = title,
