@@ -144,7 +144,7 @@ fun AppNavigation(
                 factory = object : androidx.lifecycle.ViewModelProvider.Factory {
                     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
                         @Suppress("UNCHECKED_CAST")
-                        return FavoritesViewModel(application) as T
+                        return FavoritesViewModel(application, repository) as T
                     }
                 }
             )

@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
-import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
+import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.data.model.toUiModel
 import com.example.recipecomposeapp.features.favorites.presentation.model.FavoritesUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.onStart
 
 class FavoritesViewModel(
     application: Application,
-    private val recipesRepository: RecipesRepositoryStub = RecipesRepositoryStub
+    private val recipesRepository: RecipesRepository
 ) : AndroidViewModel(application) {
 
     private val favoriteDataStoreManager = FavoriteDataStoreManager(application)
@@ -29,8 +29,10 @@ class FavoritesViewModel(
     init {
         favoriteDataStoreManager.getFavoriteIdsFlow()
             .map { favoriteIds ->
-                favoriteIds.mapNotNull { id -> 
-                    id.toIntOrNull()?.let { recipesRepository.getRecipe(it)?.toUiModel() }
+                favoriteIds.mapNotNull { idString -> 
+                    idString.toIntOrNull()?.let { recipeId -> 
+                        recipesRepository.getRecipe(recipeId)?.toUiModel() 
+                    }
                 }
             }
             .onStart { 
