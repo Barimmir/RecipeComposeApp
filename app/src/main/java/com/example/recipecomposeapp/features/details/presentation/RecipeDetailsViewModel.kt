@@ -31,7 +31,7 @@ class RecipeDetailsViewModel(
     private var currentRecipeId: Int? = null
 
     private val recipeId: Int = savedStateHandle.get<Int>("recipeId")
-        ?: throw IllegalArgumentException("recipeId is required")
+        ?: throw IllegalArgumentException("recipeId необходим")
 
     init {
         setupFavoriteSubscription()
@@ -130,8 +130,13 @@ class RecipeDetailsViewModel(
         val scaleFactor = newServings.toFloat() / originalServings
 
         return ingredients.map { ingredient ->
+            val newAmount = try {
+                ingredient.amount.toFloat() * scaleFactor
+            } catch (e: NumberFormatException) {
+                ingredient.amount.toFloat()
+            }
             ingredient.copy(
-                amount = ingredient.amount * scaleFactor
+                amount = newAmount.toString()
             )
         }
     }

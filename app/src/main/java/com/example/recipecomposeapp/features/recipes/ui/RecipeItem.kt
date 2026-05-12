@@ -60,7 +60,7 @@ fun RecipeItemPreview() {
         title = "Classic Burger",
         imageUrl = "file:///android_asset/burger_hamburger.png",
         ingredients = emptyList(),
-        method = "Cooking...",
+        method = listOf("Приготовление..."),
         isFavorite = false
     )
 

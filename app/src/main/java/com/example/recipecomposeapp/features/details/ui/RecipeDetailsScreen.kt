@@ -189,7 +189,7 @@ private fun RecipeDetailsContent(
                     .fillMaxWidth()
                     .padding(vertical = Dimens.EIGHT_DP)
             ) {
-                val methodSteps = recipe.method.split("\n").filter { it.isNotBlank() }
+                val methodSteps = recipe.method.filter { it.isNotBlank() }
 
                 methodSteps.forEachIndexed { index, step ->
                     Text(
@@ -263,13 +263,14 @@ fun IngredientItem(
     }
 }
 
-fun formatAmount(amount: Float): String {
+fun formatAmount(amount: String): String {
+    val amountFloat = amount.toFloatOrNull() ?: return amount
     return when {
-        amount >= 1 -> amount.roundToInt().toString()
-        amount in 0.75..<1.0 -> "3/4"
-        amount in 0.5..<0.75 -> "1/2"
-        amount in 0.25..<0.5 -> "1/4"
-        amount > 0 && amount < 0.25 -> "щепотка"
+        amountFloat >= 1 -> amountFloat.roundToInt().toString()
+        amountFloat in 0.75..<1.0 -> "3/4"
+        amountFloat in 0.5..<0.75 -> "1/2"
+        amountFloat in 0.25..<0.5 -> "1/4"
+        amountFloat > 0 && amountFloat < 0.25 -> "щепотка"
         else -> "по вкусу"
     }
 }
@@ -280,17 +281,17 @@ fun RecipeDetailsScreenPreview() {
     val sampleIngredients = listOf(
         IngredientsUiModel(
             name = "Говяжья котлета",
-            amount = 1.0f,
+            amount = "1",
             unitOfMeasure = "шт"
         ),
         IngredientsUiModel(
             name = "Булочка",
-            amount = 1.0f,
+            amount = "1",
             unitOfMeasure = "шт"
         ),
         IngredientsUiModel(
             name = "Сыр",
-            amount = 50.0f,
+            amount = "50",
             unitOfMeasure = "г"
         )
     )
@@ -299,11 +300,13 @@ fun RecipeDetailsScreenPreview() {
         title = "Классический бургер",
         imageUrl = "file:///android_asset/burger_hamburger.png",
         ingredients = sampleIngredients,
-        method = "\n В глубокой миске смешайте говяжий фарш, лук, чеснок, соль и перец. Разделите фарш на 4 равные части и сформируйте котлеты." +
-                "\n Разогрейте сковороду на среднем огне. Обжаривайте котлеты с каждой стороны в течение 4-5 минут или до желаемой степени прожарки." +
-                "\n В то время как котлеты готовятся, подготовьте булочки. Разрежьте их пополам и обжарьте на сковороде до золотистой корочки." +
-                "\n Смазать нижние половинки булочек горчицей и кетчупом, затем положите лист салата, котлету, кольца помидора и закройте верхней половинкой булочки." +
-                "\n Подавайте бургеры горячими с картофельными чипсами или картофельным пюре.",
+        method = listOf(
+            "В глубокой миске смешайте говяжий фарш, лук, чеснок, соль и перец. Разделите фарш на 4 равные части и сформируйте котлеты.",
+            "Разогрейте сковороду на среднем огне. Обжаривайте котлеты с каждой стороны в течение 4-5 минут или до желаемой степени прожарки.",
+            "В то время как котлеты готовятся, подготовьте булочки. Разрежьте их пополам и обжарьте на сковороде до золотистой корочки.",
+            "Смазать нижние половинки булочек горчицей и кетчупом, затем положите лист салата, котлету, кольца помидора и закройте верхней половинкой булочки.",
+            "Подавайте бургеры горячими с картофельными чипсами или картофельным пюре."
+        ),
         isFavorite = false
     )
     RecipeComposeAppTheme {

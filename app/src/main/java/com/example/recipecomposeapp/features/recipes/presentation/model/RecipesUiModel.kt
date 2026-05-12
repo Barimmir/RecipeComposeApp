@@ -11,6 +11,6 @@ data class RecipesUiModel(
     val title: String,
     val imageUrl: String,
     val ingredients: List<IngredientsUiModel>,
-    val method: String,
+    val method: List<String>,
     val isFavorite: Boolean
 ) : Parcelable

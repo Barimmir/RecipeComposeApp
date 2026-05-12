@@ -131,7 +131,7 @@ fun FavoritesScreenPreview() {
                 title = "Классический бургер",
                 imageUrl = "file:///android_asset/burger_hamburger.png",
                 ingredients = emptyList(),
-                method = "Приготовление...",
+                method = listOf("Приготовление..."),
                 isFavorite = true
             ),
             RecipesUiModel(
@@ -139,7 +139,7 @@ fun FavoritesScreenPreview() {
                 title = "Пицца Маргарита",
                 imageUrl = "file:///android_asset/pizza.png",
                 ingredients = emptyList(),
-                method = "Приготовление...",
+                method = listOf("Приготовление..."),
                 isFavorite = true
             )
         )

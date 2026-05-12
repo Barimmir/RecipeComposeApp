@@ -2,6 +2,7 @@ package com.example.recipecomposeapp.features.recipes.presentation.model
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -82,6 +83,7 @@ class RecipesViewModel(
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
+                Log.d("RecipesViewModel", "Loading recipes for categoryId: $categoryId")
                 val recipesDto = repository.getRecipesByCategory(categoryId)
                 val favoriteIds = favoriteDataStoreManager.getFavoriteIdsFlow().first()
 
@@ -91,6 +93,7 @@ class RecipesViewModel(
                     )
                 }
 
+                Log.d("RecipesViewModel", "Loaded ${recipesList.size} recipes")
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -102,7 +105,7 @@ class RecipesViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = e.message ?: "Error loading recipes"
+                        error = e.message ?: "Ошибка загрузки рецепта"
                     )
                 }
                 e.printStackTrace()

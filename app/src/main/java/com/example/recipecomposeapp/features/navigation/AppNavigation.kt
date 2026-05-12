@@ -84,6 +84,8 @@ fun AppNavigation(
             val categoryId = backStackEntry.arguments?.getInt("categoryId") ?: 0
             val categoryTitle = backStackEntry.arguments?.getString("categoryTitle") ?: ""
             val categoryImageUrl = backStackEntry.arguments?.getString("categoryImageUrl") ?: ""
+            
+            android.util.Log.d("AppNavigation", "Received categoryId: $categoryId, title: $categoryTitle")
 
             val savedStateHandle = SavedStateHandle(
                 mapOf(

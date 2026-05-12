@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class IngredientDto(
-    val quantity: Float,
+    val quantity: String,
     val unitOfMeasure: String,
     val description: String,
 )

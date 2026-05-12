@@ -123,7 +123,7 @@ fun RecipesScreenPreview_Variant1() {
                 title = "Классический бургер",
                 imageUrl = "file:///android_asset/burger_hamburger.png",
                 ingredients = emptyList(),
-                method = "Приготовление...",
+                method = listOf("Приготовление..."),
                 isFavorite = false
             ),
             RecipesUiModel(
@@ -131,7 +131,7 @@ fun RecipesScreenPreview_Variant1() {
                 title = "Пицца Маргарита",
                 imageUrl = "file:///android_asset/pizza.png",
                 ingredients = emptyList(),
-                method = "Приготовление...",
+                method = listOf("Приготовление..."),
                 isFavorite = true
             ),
             RecipesUiModel(
@@ -139,7 +139,7 @@ fun RecipesScreenPreview_Variant1() {
                 title = "Чизкейк Нью-Йорк",
                 imageUrl = "file:///android_asset/cheesecake.png",
                 ingredients = emptyList(),
-                method = "Приготовление...",
+                method = listOf("Приготовление..."),
                 isFavorite = false
             )
         )
