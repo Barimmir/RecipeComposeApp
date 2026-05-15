@@ -26,7 +26,7 @@ data class RecipeEntity(
     val id: Int,
     val title: String,
     @ColumnInfo(name = "category_id")
-    val categoryId: String,
+    val categoryId: Int,
     val imageUrl: String,
     val ingredients: List<String>,
     val method: List<String>
