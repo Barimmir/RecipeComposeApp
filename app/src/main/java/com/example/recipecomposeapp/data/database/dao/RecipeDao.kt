@@ -16,11 +16,11 @@ interface RecipeDao {
     suspend fun insertAllRecipes(recipes: List<RecipeEntity>)
 
     @Query("SELECT * FROM recipes WHERE category_id = :categoryId")
-    fun getRecipesByCategory(categoryId: String): Flow<List<RecipeEntity>>
+    fun getRecipesByCategory(categoryId: Int): Flow<List<RecipeEntity>>
 
     @Query("SELECT * FROM recipes WHERE id = :id")
-    fun getRecipeById(id: String): Flow<RecipeEntity?>
+    fun getRecipeById(id: Int): Flow<RecipeEntity?>
 
     @Query("SELECT * FROM recipes WHERE id IN (:ids)")
-    fun getRecipesByIds(ids: List<String>): Flow<List<RecipeEntity>>
+    fun getRecipesByIds(ids: List<Int>): Flow<List<RecipeEntity>>
 }
