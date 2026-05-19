@@ -80,8 +80,6 @@ class RecipesViewModel(
     private fun loadRecipes() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
-        }
-        viewModelScope.launch {
             repository.getRecipesByCategory(categoryId).collect { recipesDto ->
                 val favoriteIds = favoriteDataStoreManager.getFavoriteIdsFlow().first()
 

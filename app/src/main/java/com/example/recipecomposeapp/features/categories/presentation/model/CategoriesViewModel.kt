@@ -22,11 +22,7 @@ class CategoriesViewModel(
 
     private fun loadCategories() {
         viewModelScope.launch {
-            _uiState.update { currentState ->
-                currentState.copy(isLoading = true)
-            }
-        }
-        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
             repository.getCategories().collect { categoriesDto ->
                 val categoriesList = categoriesDto.map { dto ->
                     dto.toUiModel()
