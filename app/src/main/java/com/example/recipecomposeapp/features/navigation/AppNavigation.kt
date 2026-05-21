@@ -17,19 +17,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.recipecomposeapp.features.categories.ui.CategoriesScreen
-import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesViewModel
-import com.example.recipecomposeapp.features.favorites.ui.FavoritesScreen
-import com.example.recipecomposeapp.features.recipes.ui.RecipesScreen
-import com.example.recipecomposeapp.features.details.ui.RecipeDetailsScreen
-import com.example.recipecomposeapp.features.core.utils.Constants
+import com.example.recipecomposeapp.data.database.RecipesDatabase
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryImpl
+import com.example.recipecomposeapp.features.categories.ui.CategoriesScreen
+import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesViewModel
 import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
+import com.example.recipecomposeapp.features.core.utils.Constants
 import com.example.recipecomposeapp.features.core.utils.shareRecipe
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesViewModel
 import com.example.recipecomposeapp.features.details.presentation.RecipeDetailsViewModel
+import com.example.recipecomposeapp.features.details.ui.RecipeDetailsScreen
 import com.example.recipecomposeapp.features.favorites.presentation.FavoritesViewModel
+import com.example.recipecomposeapp.features.favorites.ui.FavoritesScreen
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesViewModel
+import com.example.recipecomposeapp.features.recipes.ui.RecipesScreen
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Composable
@@ -40,7 +41,9 @@ fun AppNavigation(
     favoriteDataStoreManager: FavoriteDataStoreManager,
     apiService: RecipesApiService
 ) {
-    val repository = remember { RecipesRepositoryImpl(apiService) }
+    val context = LocalContext.current
+    val database = remember { RecipesDatabase.buildDatabase(context) }
+    val repository = remember { RecipesRepositoryImpl(apiService, database) }
     LaunchedEffect(deepLinkIntent) {
         deepLinkIntent?.data?.let { uri ->
             val recipeId: Int? = when (uri.scheme) {
