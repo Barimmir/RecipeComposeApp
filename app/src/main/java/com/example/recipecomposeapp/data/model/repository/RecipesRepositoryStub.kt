@@ -3,6 +3,8 @@ package com.example.recipecomposeapp.data.model.repository
 import com.example.recipecomposeapp.data.model.CategoryDto
 import com.example.recipecomposeapp.data.model.IngredientDto
 import com.example.recipecomposeapp.data.model.RecipeDto
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 object RecipesRepositoryStub : RecipesRepository {
     private val categoryList = listOf(
@@ -145,18 +147,18 @@ object RecipesRepositoryStub : RecipesRepository {
     )
     private val allRecipes = burgerRecipesList
 
-    override suspend fun getCategories(): List<CategoryDto> {
-        return categoryList
+    override fun getCategories(): Flow<List<CategoryDto>> = flowOf(categoryList)
+
+    override fun getRecipesByCategory(categoryId: Int): Flow<List<RecipeDto>> {
+        return flowOf(
+            when (categoryId) {
+                0 -> burgerRecipesList
+                else -> emptyList()
+            }
+        )
     }
 
-    override suspend fun getRecipesByCategory(categoryId: Int): List<RecipeDto> {
-        return when (categoryId) {
-            0 -> burgerRecipesList
-            else -> emptyList()
-        }
-    }
-
-    override suspend fun getRecipe(recipeId: Int): RecipeDto? {
-        return allRecipes.find { it.id == recipeId }
+    override fun getRecipe(recipeId: Int): Flow<RecipeDto?> {
+        return flowOf(allRecipes.find { it.id == recipeId })
     }
 }

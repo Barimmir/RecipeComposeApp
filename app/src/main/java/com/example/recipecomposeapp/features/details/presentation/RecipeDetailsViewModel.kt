@@ -28,41 +28,13 @@ class RecipeDetailsViewModel(
     private val _uiState = MutableStateFlow(RecipeDetailsUiState())
     val uiState: StateFlow<RecipeDetailsUiState> = _uiState.asStateFlow()
 
-    private var currentRecipeId: Int? = null
-
     private val recipeId: Int = savedStateHandle.get<Int>("recipeId")
         ?: throw IllegalArgumentException("recipeId необходим")
 
     init {
         setupFavoriteSubscription()
-        loadRecipe(recipeId)
-    }
-
-    private fun setupFavoriteSubscription() {
-        favoriteDataStoreManager.getFavoriteIdsFlow()
-            .onEach { favoriteIds ->
-                currentRecipeId?.let { recipeId ->
-                    val currentRecipe = _uiState.value.recipe
-                    if (currentRecipe != null && currentRecipe.id == recipeId) {
-                        val newFavoriteStatus = favoriteIds.contains(recipeId.toString())
-                        if (currentRecipe.isFavorite != newFavoriteStatus) {
-                            _uiState.value = _uiState.value.copy(
-                                recipe = currentRecipe.copy(isFavorite = newFavoriteStatus)
-                            )
-                        }
-                    }
-                }
-            }
-            .launchIn(viewModelScope)
-    }
-
-    fun loadRecipe(recipeId: Int) {
-        currentRecipeId = recipeId
-        _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-
         viewModelScope.launch {
-            try {
-                val recipeDto = repository.getRecipe(recipeId)
+            repository.getRecipe(recipeId).collect { recipeDto ->
                 if (recipeDto != null) {
                     val favoriteIds = favoriteDataStoreManager.getFavoriteIdsFlow().first()
                     val recipe = recipeDto.toUiModel().copy(
@@ -74,36 +46,40 @@ class RecipeDetailsViewModel(
                         scaledIngredients = recipe.ingredients,
                         isLoading = false
                     )
-                } else {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        error = "Рецепт не найден"
-                    )
                 }
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = "Ошибка загрузки рецепта: ${e.message}"
-                )
             }
         }
     }
 
+    private fun setupFavoriteSubscription() {
+        favoriteDataStoreManager.getFavoriteIdsFlow()
+            .onEach { favoriteIds ->
+                val currentRecipe = _uiState.value.recipe
+                if (currentRecipe != null) {
+                    val newFavoriteStatus = favoriteIds.contains(recipeId.toString())
+                    if (currentRecipe.isFavorite != newFavoriteStatus) {
+                        _uiState.value = _uiState.value.copy(
+                            recipe = currentRecipe.copy(isFavorite = newFavoriteStatus)
+                        )
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
     fun toggleFavorite() {
         val recipe = _uiState.value.recipe ?: return
-        currentRecipeId?.let { recipeId ->
-            viewModelScope.launch {
-                try {
-                    if (recipe.isFavorite) {
-                        favoriteDataStoreManager.removeFavorite(recipeId)
-                    } else {
-                        favoriteDataStoreManager.addFavorite(recipeId)
-                    }
-                } catch (e: Exception) {
-                    _uiState.value = _uiState.value.copy(
-                        error = "Ошибка при изменении избранного: ${e.message}"
-                    )
+        viewModelScope.launch {
+            try {
+                if (recipe.isFavorite) {
+                    favoriteDataStoreManager.removeFavorite(recipeId)
+                } else {
+                    favoriteDataStoreManager.addFavorite(recipeId)
                 }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    error = "Ошибка при изменении избранного: ${e.message}"
+                )
             }
         }
     }
