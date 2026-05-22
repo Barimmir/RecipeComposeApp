@@ -46,6 +46,8 @@ class RecipeDetailsViewModel(
                         scaledIngredients = recipe.ingredients,
                         isLoading = false
                     )
+                } else {
+                    _uiState.value = _uiState.value.copy(isLoading = true)
                 }
             }
         }
