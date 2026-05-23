@@ -12,9 +12,9 @@ import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class RecipesRepositoryImpl(
     private val apiService: RecipesApiService,
@@ -52,14 +52,17 @@ class RecipesRepositoryImpl(
         }
     }
 
-    override suspend fun getRecipe(recipeId: Int): RecipeDto {
-        return withContext(Dispatchers.IO){
+    override fun getRecipe(recipeId: Int): Flow<RecipeDto?> {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
-                apiService.getRecipe(recipeId)
-            } catch (e: Exception){
+                val recipe = apiService.getRecipe(recipeId)
+                val existing = recipeDao.getRecipeById(recipeId).first()
+                val categoryId = existing?.categoryId ?: 0
+                recipeDao.insertAllRecipes(listOf(recipe.toEntity(categoryId)))
+            } catch (e: Exception) {
                 Log.e("RecipesRepository", "Ошибка загрузки рецепта $recipeId", e)
-                throw e
             }
         }
+        return recipeDao.getRecipeById(recipeId).map { entity -> entity?.toDto() }
     }
 }

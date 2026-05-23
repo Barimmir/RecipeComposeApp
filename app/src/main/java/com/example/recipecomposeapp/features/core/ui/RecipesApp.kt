@@ -21,6 +21,7 @@ import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.navigation.BottomNavigation
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.navigation.Screen
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun RecipesApp(
@@ -80,11 +81,14 @@ fun RecipesApp(
 fun RecipesAppPreview() {
     RecipeComposeAppTheme {
         val mockApiService = object : RecipesApiService {
-            override suspend fun getCategories() = RecipesRepositoryStub.getCategories()
-            override suspend fun getRecipesByCategory(categoryId: Int) = 
-                RecipesRepositoryStub.getRecipesByCategory(categoryId)
+            override suspend fun getCategories() =
+                RecipesRepositoryStub.getCategories().first()
+
+            override suspend fun getRecipesByCategory(categoryId: Int) =
+                RecipesRepositoryStub.getRecipesByCategory(categoryId).first()
+
             override suspend fun getRecipe(recipeId: Int): RecipeDto {
-                return RecipesRepositoryStub.getRecipe(recipeId) 
+                return RecipesRepositoryStub.getRecipe(recipeId).first()
                     ?: throw IllegalArgumentException("Recipe not found")
             }
         }
