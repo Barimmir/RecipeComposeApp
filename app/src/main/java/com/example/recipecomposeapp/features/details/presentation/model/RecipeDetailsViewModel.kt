@@ -1,29 +1,28 @@
-package com.example.recipecomposeapp.features.details.presentation
+package com.example.recipecomposeapp.features.details.presentation.model
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.data.model.toUiModel
-import com.example.recipecomposeapp.features.details.presentation.model.RecipeDetailsUiState
 import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientsUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RecipeDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    application: Application,
-    private val repository: RecipesRepository
-) : AndroidViewModel(application) {
-
-    private val favoriteDataStoreManager = FavoriteDataStoreManager(application)
+    private val repository: RecipesRepository,
+    private val favoriteDataStoreManager: FavoriteDataStoreManager
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RecipeDetailsUiState())
     val uiState: StateFlow<RecipeDetailsUiState> = _uiState.asStateFlow()
@@ -34,20 +33,27 @@ class RecipeDetailsViewModel(
     init {
         setupFavoriteSubscription()
         viewModelScope.launch {
-            repository.getRecipe(recipeId).collect { recipeDto ->
+            repository.getRecipe(recipeId)
+                .catch { e ->
+                    Log.e("RecipeDetailsViewModel", "Error loading recipe", e)
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+                .collect { recipeDto ->
                 if (recipeDto != null) {
                     val favoriteIds = favoriteDataStoreManager.getFavoriteIdsFlow().first()
                     val recipe = recipeDto.toUiModel().copy(
                         isFavorite = favoriteIds.contains(recipeId.toString())
                     )
-                    _uiState.value = _uiState.value.copy(
-                        recipe = recipe,
-                        currentPortions = 1,
-                        scaledIngredients = recipe.ingredients,
-                        isLoading = false
-                    )
+                    _uiState.update {
+                        it.copy(
+                            recipe = recipe,
+                            currentPortions = 1,
+                            scaledIngredients = recipe.ingredients,
+                            isLoading = false
+                        )
+                    }
                 } else {
-                    _uiState.value = _uiState.value.copy(isLoading = true)
+                    _uiState.update { it.copy(isLoading = true) }
                 }
             }
         }
@@ -60,9 +66,9 @@ class RecipeDetailsViewModel(
                 if (currentRecipe != null) {
                     val newFavoriteStatus = favoriteIds.contains(recipeId.toString())
                     if (currentRecipe.isFavorite != newFavoriteStatus) {
-                        _uiState.value = _uiState.value.copy(
-                            recipe = currentRecipe.copy(isFavorite = newFavoriteStatus)
-                        )
+                        _uiState.update {
+                            it.copy(recipe = currentRecipe.copy(isFavorite = newFavoriteStatus))
+                        }
                     }
                 }
             }
@@ -79,9 +85,7 @@ class RecipeDetailsViewModel(
                     favoriteDataStoreManager.addFavorite(recipeId)
                 }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    error = "Ошибка при изменении избранного: ${e.message}"
-                )
+                Log.e("RecipeDetailsViewModel", "Error toggling favorite", e)
             }
         }
     }
@@ -92,10 +96,12 @@ class RecipeDetailsViewModel(
         val scaledIngredients =
             calculateScaledIngredients(recipe.ingredients, currentPortions, newPortions)
 
-        _uiState.value = _uiState.value.copy(
-            currentPortions = newPortions,
-            scaledIngredients = scaledIngredients
-        )
+        _uiState.update {
+            it.copy(
+                currentPortions = newPortions,
+                scaledIngredients = scaledIngredients
+            )
+        }
     }
 
     private fun calculateScaledIngredients(
@@ -109,18 +115,14 @@ class RecipeDetailsViewModel(
 
         return ingredients.map { ingredient ->
             val newAmount = try {
-                ingredient.amount.toFloat() * scaleFactor
+                (ingredient.amount.toFloat() * scaleFactor).toString()
             } catch (e: NumberFormatException) {
-                ingredient.amount.toFloat()
+                ingredient.amount
             }
             ingredient.copy(
-                amount = newAmount.toString()
+                amount = newAmount
             )
         }
     }
 
-
-    fun clearError() {
-        _uiState.value = _uiState.value.copy(error = null)
-    }
 }

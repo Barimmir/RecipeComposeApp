@@ -11,27 +11,21 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.recipecomposeapp.features.core.utils.Dimens
-import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun BottomNavigation(
     onCategoriesClick: () -> Unit,
     onFavoriteClick: () -> Unit,
     onRecipesClick: () -> Unit,
-    favoriteDataStoreManager: FavoriteDataStoreManager? = null
+    favoriteCount: Int = 0
 ) {
-    val favoriteCount by (favoriteDataStoreManager?.getFavoriteCountFlow() ?: flowOf(0))
-        .collectAsState(initial = 0)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -95,7 +89,7 @@ fun BottomNavigationPreview() {
             onCategoriesClick = {},
             onFavoriteClick = {},
             onRecipesClick = {},
-            favoriteDataStoreManager = null
+            favoriteCount = 0
         )
     }
 }

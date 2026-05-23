@@ -59,28 +59,6 @@ fun RecipesScreen(
                 }
             }
 
-            uiState.hasError -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Ошибка: ${uiState.error}",
-                            color = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.height(Dimens.SIXTEEN_DP))
-                        Button(onClick = { viewModel.refresh() }) {
-                            Text("Повторить")
-                        }
-                        Spacer(modifier = Modifier.height(Dimens.EIGHT_DP))
-                        Button(onClick = { viewModel.clearError() }) {
-                            Text("Закрыть")
-                        }
-                    }
-                }
-            }
-
             uiState.isEmpty -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),

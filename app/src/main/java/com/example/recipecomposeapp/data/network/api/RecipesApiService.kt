@@ -1,4 +1,4 @@
-package com.example.recipecomposeapp.features.core.network.api
+package com.example.recipecomposeapp.data.network.api
 
 import com.example.recipecomposeapp.data.model.CategoryDto
 import com.example.recipecomposeapp.data.model.RecipeDto

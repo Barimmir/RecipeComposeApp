@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.recipecomposeapp.data.model.FavoritePrefsManager
-import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
+import com.example.recipecomposeapp.data.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json

@@ -1,9 +1,9 @@
 package com.example.recipecomposeapp.features.recipes.presentation.model
 
-import android.app.Application
+import android.util.Log
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.repository.RecipesRepository
@@ -11,6 +11,7 @@ import com.example.recipecomposeapp.data.model.toUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -19,11 +20,10 @@ import kotlinx.coroutines.launch
 import java.net.URLDecoder
 
 class RecipesViewModel(
-    application: Application,
     private val savedStateHandle: SavedStateHandle,
-    private val repository: RecipesRepository
-) : AndroidViewModel(application) {
-    private val favoriteDataStoreManager = FavoriteDataStoreManager(application)
+    private val repository: RecipesRepository,
+    private val favoriteDataStoreManager: FavoriteDataStoreManager
+) : ViewModel() {
 
     private val categoryId: Int = savedStateHandle["categoryId"] ?: 0
     private val rawCategoryTitle: String = savedStateHandle["categoryTitle"] ?: ""
@@ -79,8 +79,13 @@ class RecipesViewModel(
 
     private fun loadRecipes() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
-            repository.getRecipesByCategory(categoryId).collect { recipesDto ->
+            _uiState.update { it.copy(isLoading = true) }
+            repository.getRecipesByCategory(categoryId)
+                .catch { e ->
+                    Log.e("RecipesViewModel", "Error loading recipes", e)
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+                .collect { recipesDto ->
                 val favoriteIds = favoriteDataStoreManager.getFavoriteIdsFlow().first()
 
                 val recipesList = recipesDto.map { dto ->
@@ -102,9 +107,5 @@ class RecipesViewModel(
 
     fun refresh() {
         loadRecipes()
-    }
-
-    fun clearError() {
-        _uiState.update { it.copy(error = null) }
     }
 }

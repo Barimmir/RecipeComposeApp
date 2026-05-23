@@ -161,4 +161,8 @@ object RecipesRepositoryStub : RecipesRepository {
     override fun getRecipe(recipeId: Int): Flow<RecipeDto?> {
         return flowOf(allRecipes.find { it.id == recipeId })
     }
+
+    override fun getRecipesByIds(ids: List<Int>): Flow<List<RecipeDto>> {
+        return flowOf(allRecipes.filter { it.id in ids })
+    }
 }
