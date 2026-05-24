@@ -8,6 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,7 +19,7 @@ import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryStub
 import com.example.recipecomposeapp.features.navigation.AppNavigation
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.RecipeDto
-import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
+import com.example.recipecomposeapp.data.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.navigation.BottomNavigation
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.navigation.Screen
@@ -31,6 +33,8 @@ fun RecipesApp(
     val navController = rememberNavController()
     val context = LocalContext.current
     val favoriteManager = remember { FavoriteDataStoreManager(context) }
+    val favoriteCount by favoriteManager.getFavoriteCountFlow()
+        .collectAsState(initial = 0)
     RecipeComposeAppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -55,7 +59,7 @@ fun RecipesApp(
                                 popUpTo(Screen.Recipes.route) { inclusive = true }
                             }
                         },
-                        favoriteDataStoreManager = favoriteManager
+                        favoriteCount = favoriteCount
                     )
                 }
             ) { paddingValues ->

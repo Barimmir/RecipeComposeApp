@@ -1,7 +1,5 @@
 package com.example.recipecomposeapp.features.navigation
 
-import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,17 +20,16 @@ import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryImpl
 import com.example.recipecomposeapp.features.categories.ui.CategoriesScreen
 import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesViewModel
-import com.example.recipecomposeapp.features.core.network.api.RecipesApiService
+import com.example.recipecomposeapp.data.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.example.recipecomposeapp.features.core.utils.shareRecipe
-import com.example.recipecomposeapp.features.details.presentation.RecipeDetailsViewModel
+import com.example.recipecomposeapp.features.details.presentation.model.RecipeDetailsViewModel
 import com.example.recipecomposeapp.features.details.ui.RecipeDetailsScreen
 import com.example.recipecomposeapp.features.favorites.presentation.FavoritesViewModel
 import com.example.recipecomposeapp.features.favorites.ui.FavoritesScreen
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesViewModel
 import com.example.recipecomposeapp.features.recipes.ui.RecipesScreen
 
-@SuppressLint("ViewModelConstructorInComposable")
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
@@ -69,9 +66,17 @@ fun AppNavigation(
         modifier = modifier
     ) {
         composable(route = Screen.Categories.route) {
+            val categoriesViewModel: CategoriesViewModel = viewModel(
+                factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                        @Suppress("UNCHECKED_CAST")
+                        return CategoriesViewModel(repository) as T
+                    }
+                }
+            )
             CategoriesScreen(
                 modifier = Modifier,
-                viewModel = remember { CategoriesViewModel(repository) },
+                viewModel = categoriesViewModel,
                 onCategoryClick = { id, title, imageUrl ->
                     navController.navigate(Screen.Recipes.createRoute(id, title, imageUrl))
                 }
@@ -97,13 +102,11 @@ fun AppNavigation(
                     "categoryImageUrl" to categoryImageUrl
                 )
             )
-            val context = LocalContext.current
-            val application = context.applicationContext as Application
             val recipesViewModel: RecipesViewModel = viewModel(
                 factory = object : androidx.lifecycle.ViewModelProvider.Factory {
                     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
                         @Suppress("UNCHECKED_CAST")
-                        return RecipesViewModel(application, savedStateHandle, repository) as T
+                        return RecipesViewModel(savedStateHandle, repository, favoriteDataStoreManager) as T
                     }
                 }
             )
@@ -118,8 +121,6 @@ fun AppNavigation(
             route = Screen.RecipeDetails.Base.route,
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val context = LocalContext.current
-            val application = context.applicationContext as Application
             val savedStateHandle = backStackEntry.savedStateHandle
             val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel(
                 factory = object : androidx.lifecycle.ViewModelProvider.Factory {
@@ -127,8 +128,8 @@ fun AppNavigation(
                         @Suppress("UNCHECKED_CAST")
                         return RecipeDetailsViewModel(
                             savedStateHandle,
-                            application,
-                            repository
+                            repository,
+                            favoriteDataStoreManager
                         ) as T
                     }
                 }
@@ -141,13 +142,11 @@ fun AppNavigation(
             )
         }
         composable(route = Screen.Favorites.route) {
-            val context = LocalContext.current
-            val application = context.applicationContext as Application
             val favoritesViewModel: FavoritesViewModel = viewModel(
                 factory = object : androidx.lifecycle.ViewModelProvider.Factory {
                     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
                         @Suppress("UNCHECKED_CAST")
-                        return FavoritesViewModel(application, repository) as T
+                        return FavoritesViewModel(repository, favoriteDataStoreManager) as T
                     }
                 }
             )

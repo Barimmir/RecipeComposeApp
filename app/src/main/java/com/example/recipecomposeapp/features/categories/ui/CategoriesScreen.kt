@@ -13,8 +13,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +31,7 @@ fun CategoriesScreen(
     viewModel: CategoriesViewModel,
     onCategoryClick: (Int, String, String) -> Unit
 ) {
-    val categories by viewModel.uiState.collectAsState()
+    val categories by viewModel.uiState.collectAsStateWithLifecycle()
     Column(
         modifier = modifier
             .fillMaxSize()

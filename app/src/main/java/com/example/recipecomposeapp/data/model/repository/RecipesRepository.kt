@@ -8,4 +8,5 @@ interface RecipesRepository {
     fun getCategories(): Flow<List<CategoryDto>>
     fun getRecipesByCategory(categoryId: Int): Flow<List<RecipeDto>>
     fun getRecipe(recipeId: Int): Flow<RecipeDto?>
+    fun getRecipesByIds(ids: List<Int>): Flow<List<RecipeDto>>
 }

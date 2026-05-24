@@ -31,7 +31,7 @@ import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
-import com.example.recipecomposeapp.features.details.presentation.RecipeDetailsViewModel
+import com.example.recipecomposeapp.features.details.presentation.model.RecipeDetailsViewModel
 import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientsUiModel
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
 import kotlin.math.roundToInt
@@ -45,21 +45,6 @@ fun RecipeDetailsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    uiState.recipe?.let { recipe ->
-        RecipeDetailsContent(
-            recipe = recipe,
-            numberOfServings = uiState.currentPortions,
-            scaledIngredients = uiState.scaledIngredients,
-            isLoading = uiState.isLoading,
-            error = uiState.error,
-            onPortionsChange = viewModel::updatePortions,
-            onFavoriteClick = viewModel::toggleFavorite,
-            onShareClick = { shareRecipe(context, recipe.id, recipe.title) },
-            onErrorDismiss = viewModel::clearError,
-            modifier = modifier
-        )
-    }
-
     if (uiState.isLoading && uiState.recipe == null) {
         Box(
             modifier = modifier
@@ -71,20 +56,17 @@ fun RecipeDetailsScreen(
         }
     }
 
-    if (uiState.recipe == null && !uiState.isLoading && uiState.hasError) {
-        Column(
+    uiState.recipe?.let { recipe ->
+        RecipeDetailsContent(
+            recipe = recipe,
+            numberOfServings = uiState.currentPortions,
+            scaledIngredients = uiState.scaledIngredients,
+            isLoading = uiState.isLoading,
+            onPortionsChange = viewModel::updatePortions,
+            onFavoriteClick = viewModel::toggleFavorite,
+            onShareClick = { shareRecipe(context, recipe.id, recipe.title) },
             modifier = modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(Dimens.SIXTEEN_DP),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = uiState.error ?: "Рецепт не найден",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
+        )
     }
 }
 
@@ -94,11 +76,9 @@ private fun RecipeDetailsContent(
     numberOfServings: Int,
     scaledIngredients: List<IngredientsUiModel>,
     isLoading: Boolean,
-    error: String?,
     onPortionsChange: (Int) -> Unit,
     onFavoriteClick: () -> Unit,
     onShareClick: () -> Unit,
-    onErrorDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -315,11 +295,9 @@ fun RecipeDetailsScreenPreview() {
             numberOfServings = 1,
             scaledIngredients = sampleIngredients,
             isLoading = false,
-            error = null,
             onPortionsChange = {},
             onFavoriteClick = {},
-            onShareClick = {},
-            onErrorDismiss = {}
+            onShareClick = {}
         )
     }
 }
