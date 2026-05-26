@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -82,13 +83,15 @@ fun AppNavigation(
             
             android.util.Log.d("AppNavigation", "Received categoryId: $categoryId, title: $categoryTitle")
 
-            val savedStateHandle = SavedStateHandle(
-                mapOf(
-                    "categoryId" to categoryId,
-                    "categoryTitle" to categoryTitle,
-                    "categoryImageUrl" to categoryImageUrl
+            val savedStateHandle = remember(backStackEntry) {
+                SavedStateHandle(
+                    mapOf(
+                        "categoryId" to categoryId,
+                        "categoryTitle" to categoryTitle,
+                        "categoryImageUrl" to categoryImageUrl
+                    )
                 )
-            )
+            }
             val recipesViewModel: RecipesViewModel = viewModel(
                 factory = object : ViewModelProvider.Factory {
                     override fun <T : ViewModel> create(modelClass: Class<T>): T {
