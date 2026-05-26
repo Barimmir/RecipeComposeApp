@@ -1,5 +1,6 @@
 package com.example.recipecomposeapp.features.favorites.ui
 
+import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,25 +15,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.recipecomposeapp.app.di.FavoritesViewModelFactory
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
 import com.example.recipecomposeapp.features.recipes.ui.RecipeItem
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
-import com.example.recipecomposeapp.features.favorites.presentation.FavoritesViewModel
 
 @Composable
 fun FavoritesScreen(
-    viewModel: FavoritesViewModel,
     onRecipeClick: (Int, RecipesUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val application = LocalContext.current.applicationContext as Application
+    val viewModel = remember { FavoritesViewModelFactory(application).create() }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(

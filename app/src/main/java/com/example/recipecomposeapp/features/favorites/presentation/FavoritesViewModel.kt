@@ -1,8 +1,10 @@
 package com.example.recipecomposeapp.features.favorites.presentation
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recipecomposeapp.app.di.RecipeApplication
 import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.data.model.toUiModel
@@ -21,9 +23,11 @@ import kotlinx.coroutines.flow.update
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FavoritesViewModel(
-    private val recipesRepository: RecipesRepository,
-    private val favoriteDataStoreManager: FavoriteDataStoreManager
+    application: Application
 ) : ViewModel() {
+    private val appContainer = (application as RecipeApplication).appContainer
+    private val recipesRepository: RecipesRepository = appContainer.recipesRepository
+    private val favoriteDataStoreManager = FavoriteDataStoreManager(application)
 
     private val _uiState = MutableStateFlow(FavoritesUiState())
     val uiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()
