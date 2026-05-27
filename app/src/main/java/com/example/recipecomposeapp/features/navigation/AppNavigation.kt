@@ -1,5 +1,6 @@
 package com.example.recipecomposeapp.features.navigation
 
+import android.app.Application
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,26 +9,20 @@ import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.recipecomposeapp.data.database.RecipesDatabase
-import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
-import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryImpl
+import com.example.recipecomposeapp.app.di.AppContainer
+import com.example.recipecomposeapp.app.di.RecipeDetailsViewModelFactory
+import com.example.recipecomposeapp.app.di.RecipesViewModelFactory
 import com.example.recipecomposeapp.features.categories.ui.CategoriesScreen
-import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesViewModel
-import com.example.recipecomposeapp.data.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.example.recipecomposeapp.features.core.utils.shareRecipe
-import com.example.recipecomposeapp.features.details.presentation.model.RecipeDetailsViewModel
 import com.example.recipecomposeapp.features.details.ui.RecipeDetailsScreen
-import com.example.recipecomposeapp.features.favorites.presentation.FavoritesViewModel
 import com.example.recipecomposeapp.features.favorites.ui.FavoritesScreen
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesViewModel
 import com.example.recipecomposeapp.features.recipes.ui.RecipesScreen
 
 @Composable
@@ -35,12 +30,9 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     deepLinkIntent: Intent? = null,
-    favoriteDataStoreManager: FavoriteDataStoreManager,
-    apiService: RecipesApiService
+    appContainer: AppContainer
 ) {
     val context = LocalContext.current
-    val database = remember { RecipesDatabase.buildDatabase(context) }
-    val repository = remember { RecipesRepositoryImpl(apiService, database) }
     LaunchedEffect(deepLinkIntent) {
         deepLinkIntent?.data?.let { uri ->
             val recipeId: Int? = when (uri.scheme) {
@@ -66,17 +58,8 @@ fun AppNavigation(
         modifier = modifier
     ) {
         composable(route = Screen.Categories.route) {
-            val categoriesViewModel: CategoriesViewModel = viewModel(
-                factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        @Suppress("UNCHECKED_CAST")
-                        return CategoriesViewModel(repository) as T
-                    }
-                }
-            )
             CategoriesScreen(
                 modifier = Modifier,
-                viewModel = categoriesViewModel,
                 onCategoryClick = { id, title, imageUrl ->
                     navController.navigate(Screen.Recipes.createRoute(id, title, imageUrl))
                 }
@@ -95,21 +78,21 @@ fun AppNavigation(
             
             android.util.Log.d("AppNavigation", "Received categoryId: $categoryId, title: $categoryTitle")
 
-            val savedStateHandle = SavedStateHandle(
-                mapOf(
-                    "categoryId" to categoryId,
-                    "categoryTitle" to categoryTitle,
-                    "categoryImageUrl" to categoryImageUrl
+            val savedStateHandle = remember(backStackEntry) {
+                SavedStateHandle(
+                    mapOf(
+                        "categoryId" to categoryId,
+                        "categoryTitle" to categoryTitle,
+                        "categoryImageUrl" to categoryImageUrl
+                    )
                 )
-            )
-            val recipesViewModel: RecipesViewModel = viewModel(
-                factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        @Suppress("UNCHECKED_CAST")
-                        return RecipesViewModel(savedStateHandle, repository, favoriteDataStoreManager) as T
-                    }
-                }
-            )
+            }
+            val recipesViewModel = remember {
+                RecipesViewModelFactory(
+                    savedStateHandle = savedStateHandle,
+                    repository = appContainer.recipesRepository
+                ).create()
+            }
             RecipesScreen(
                 viewModel = recipesViewModel,
                 onRecipeClick = { recipeId, _ ->
@@ -122,18 +105,13 @@ fun AppNavigation(
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
             val savedStateHandle = backStackEntry.savedStateHandle
-            val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel(
-                factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        @Suppress("UNCHECKED_CAST")
-                        return RecipeDetailsViewModel(
-                            savedStateHandle,
-                            repository,
-                            favoriteDataStoreManager
-                        ) as T
-                    }
-                }
-            )
+            val recipeDetailsViewModel = remember {
+                RecipeDetailsViewModelFactory(
+                    application = context.applicationContext as Application,
+                    savedStateHandle = savedStateHandle,
+                    repository = appContainer.recipesRepository
+                ).create()
+            }
             RecipeDetailsScreen(
                 viewModel = recipeDetailsViewModel,
                 shareRecipe = { context, id, title ->
@@ -142,16 +120,7 @@ fun AppNavigation(
             )
         }
         composable(route = Screen.Favorites.route) {
-            val favoritesViewModel: FavoritesViewModel = viewModel(
-                factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                        @Suppress("UNCHECKED_CAST")
-                        return FavoritesViewModel(repository, favoriteDataStoreManager) as T
-                    }
-                }
-            )
             FavoritesScreen(
-                viewModel = favoritesViewModel,
                 onRecipeClick = { recipeId, _ ->
                     navController.navigate(Screen.RecipeDetails.Base.createRoute(recipeId))
                 },

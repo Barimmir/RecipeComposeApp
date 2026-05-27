@@ -5,16 +5,12 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.data.model.toUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
@@ -22,7 +18,6 @@ import java.net.URLDecoder
 class RecipesViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val repository: RecipesRepository,
-    private val favoriteDataStoreManager: FavoriteDataStoreManager
 ) : ViewModel() {
 
     private val categoryId: Int = savedStateHandle["categoryId"] ?: 0
@@ -54,27 +49,6 @@ class RecipesViewModel(
 
     init {
         loadRecipes()
-        setupFavoriteSubscription()
-    }
-
-    private fun setupFavoriteSubscription() {
-        favoriteDataStoreManager.getFavoriteIdsFlow()
-            .onEach { favoriteIds ->
-                updateRecipesFavoriteStatus(favoriteIds)
-            }
-            .launchIn(viewModelScope)
-    }
-
-    private fun updateRecipesFavoriteStatus(favoriteIds: Set<String>) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                recipes = currentState.recipes.map { recipe ->
-                    recipe.copy(
-                        isFavorite = favoriteIds.contains(recipe.id.toString())
-                    )
-                }
-            )
-        }
     }
 
     private fun loadRecipes() {
@@ -86,12 +60,8 @@ class RecipesViewModel(
                     _uiState.update { it.copy(isLoading = false) }
                 }
                 .collect { recipesDto ->
-                val favoriteIds = favoriteDataStoreManager.getFavoriteIdsFlow().first()
-
                 val recipesList = recipesDto.map { dto ->
-                    dto.toUiModel().copy(
-                        isFavorite = favoriteIds.contains(dto.id.toString())
-                    )
+                    dto.toUiModel().copy(isFavorite = false)
                 }
 
                 _uiState.update {

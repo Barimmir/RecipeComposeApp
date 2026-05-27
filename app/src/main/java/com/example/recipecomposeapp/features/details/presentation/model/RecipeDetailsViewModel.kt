@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class RecipeDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: RecipesRepository,
-    private val favoriteDataStoreManager: FavoriteDataStoreManager
+    private val favoriteDataStoreManager: FavoriteDataStoreManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RecipeDetailsUiState())
