@@ -1,6 +1,5 @@
 package com.example.recipecomposeapp.features.details.presentation.model
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -20,11 +19,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RecipeDetailsViewModel(
-    application: Application,
     savedStateHandle: SavedStateHandle,
     private val repository: RecipesRepository,
+    private val favoriteDataStoreManager: FavoriteDataStoreManager,
 ) : ViewModel() {
-    private val favoriteDataStoreManager = FavoriteDataStoreManager(application)
 
     private val _uiState = MutableStateFlow(RecipeDetailsUiState())
     val uiState: StateFlow<RecipeDetailsUiState> = _uiState.asStateFlow()

@@ -9,9 +9,6 @@ import kotlinx.coroutines.delay
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -24,10 +21,8 @@ import com.example.recipecomposeapp.app.di.RecipesViewModelFactory
 import com.example.recipecomposeapp.features.categories.ui.CategoriesScreen
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.example.recipecomposeapp.features.core.utils.shareRecipe
-import com.example.recipecomposeapp.features.details.presentation.model.RecipeDetailsViewModel
 import com.example.recipecomposeapp.features.details.ui.RecipeDetailsScreen
 import com.example.recipecomposeapp.features.favorites.ui.FavoritesScreen
-import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesViewModel
 import com.example.recipecomposeapp.features.recipes.ui.RecipesScreen
 
 @Composable
@@ -92,17 +87,12 @@ fun AppNavigation(
                     )
                 )
             }
-            val recipesViewModel: RecipesViewModel = viewModel(
-                factory = object : ViewModelProvider.Factory {
-                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                        @Suppress("UNCHECKED_CAST")
-                        return RecipesViewModelFactory(
-                            savedStateHandle = savedStateHandle,
-                            repository = appContainer.recipesRepository
-                        ).create() as T
-                    }
-                }
-            )
+            val recipesViewModel = remember {
+                RecipesViewModelFactory(
+                    savedStateHandle = savedStateHandle,
+                    repository = appContainer.recipesRepository
+                ).create()
+            }
             RecipesScreen(
                 viewModel = recipesViewModel,
                 onRecipeClick = { recipeId, _ ->
@@ -115,18 +105,13 @@ fun AppNavigation(
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
             val savedStateHandle = backStackEntry.savedStateHandle
-            val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel(
-                factory = object : ViewModelProvider.Factory {
-                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                        @Suppress("UNCHECKED_CAST")
-                        return RecipeDetailsViewModelFactory(
-                            application = context.applicationContext as Application,
-                            savedStateHandle = savedStateHandle,
-                            repository = appContainer.recipesRepository
-                        ).create() as T
-                    }
-                }
-            )
+            val recipeDetailsViewModel = remember {
+                RecipeDetailsViewModelFactory(
+                    application = context.applicationContext as Application,
+                    savedStateHandle = savedStateHandle,
+                    repository = appContainer.recipesRepository
+                ).create()
+            }
             RecipeDetailsScreen(
                 viewModel = recipeDetailsViewModel,
                 shareRecipe = { context, id, title ->
