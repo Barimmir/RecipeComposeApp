@@ -3,8 +3,6 @@ package com.example.recipecomposeapp.app.di
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import com.example.recipecomposeapp.data.database.RecipesDatabase
-import com.example.recipecomposeapp.data.model.repository.RecipesRepository
-import com.example.recipecomposeapp.data.model.repository.RecipesRepositoryImpl
 import com.example.recipecomposeapp.data.network.api.RecipesApiService
 import com.example.recipecomposeapp.features.core.utils.Constants
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -68,10 +66,5 @@ object AppModule {
     fun provideRecipesDatabase(@ApplicationContext context: Context): RecipesDatabase {
         return RecipesDatabase.buildDatabase(context)
     }
-
-    @Provides
-    @Singleton
-    fun provideRecipesRepository(impl: RecipesRepositoryImpl): RecipesRepository {
-        return impl
-    }
 }
+
