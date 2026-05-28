@@ -12,7 +12,7 @@ import com.example.recipecomposeapp.data.database.entity.RecipeEntity
 
 @Database(
     entities = [CategoryEntity::class, RecipeEntity::class],
-    version = 4,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -26,7 +26,7 @@ abstract class RecipesDatabase : RoomDatabase() {
                 context,
                 RecipesDatabase::class.java,
                 "recipes_database"
-            ).fallbackToDestructiveMigration().build()
+            ).fallbackToDestructiveMigration(true).build()
         }
     }
 }

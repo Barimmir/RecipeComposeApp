@@ -8,6 +8,7 @@ import com.example.recipecomposeapp.data.model.FavoriteDataStoreManager
 import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.data.model.toUiModel
 import com.example.recipecomposeapp.features.recipes.presentation.model.IngredientsUiModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,8 +18,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RecipeDetailsViewModel(
+@HiltViewModel
+class RecipeDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: RecipesRepository,
     private val favoriteDataStoreManager: FavoriteDataStoreManager,
@@ -35,7 +38,7 @@ class RecipeDetailsViewModel(
         viewModelScope.launch {
             repository.getRecipe(recipeId)
                 .catch { e ->
-                    Log.e("RecipeDetailsViewModel", "Error loading recipe", e)
+                    Log.e("RecipeDetailsViewModel", "Ошибка загрузки рецепта", e)
                     _uiState.update { it.copy(isLoading = false) }
                 }
                 .collect { recipeDto ->
@@ -85,7 +88,7 @@ class RecipeDetailsViewModel(
                     favoriteDataStoreManager.addFavorite(recipeId)
                 }
             } catch (e: Exception) {
-                Log.e("RecipeDetailsViewModel", "Error toggling favorite", e)
+                Log.e("RecipeDetailsViewModel", "Ошибка добавления в избранное", e)
             }
         }
     }
@@ -116,7 +119,7 @@ class RecipeDetailsViewModel(
         return ingredients.map { ingredient ->
             val newAmount = try {
                 (ingredient.amount.toFloat() * scaleFactor).toString()
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 ingredient.amount
             }
             ingredient.copy(

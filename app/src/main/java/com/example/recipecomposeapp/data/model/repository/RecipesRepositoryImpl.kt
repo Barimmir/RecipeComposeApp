@@ -17,10 +17,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RecipesRepositoryImpl(
+@Singleton
+class RecipesRepositoryImpl @Inject constructor(
     private val apiService: RecipesApiService,
-    private val database: RecipesDatabase
+    database: RecipesDatabase
 ) : RecipesRepository {
     private val categoryDao: CategoryDao = database.categoryDao()
     private val recipeDao: RecipeDao = database.recipeDao()
@@ -36,7 +39,7 @@ class RecipesRepositoryImpl(
                     val entities = categories.map { it.toEntity() }
                     categoryDao.insertAllCategories(entities)
                 } catch (e: Exception) {
-                    Log.e("RecipesRepository", "Error loading categories", e)
+                    Log.e("RecipesRepository", "Ошибка загрузки категорий", e)
                 }
             }
         }
@@ -52,7 +55,7 @@ class RecipesRepositoryImpl(
                     val entities = recipes.map { it.toEntity(categoryId) }
                     recipeDao.insertAllRecipes(entities)
                 } catch (e: Exception) {
-                    Log.e("RecipesRepository", "Error loading recipes for category $categoryId", e)
+                    Log.e("RecipesRepository", "Ошибка загрузки рецептов для категории $categoryId", e)
                 }
             }
         }
@@ -68,7 +71,7 @@ class RecipesRepositoryImpl(
                         val categoryId = existing?.categoryId ?: 0
                         recipeDao.insertAllRecipes(listOf(recipe.toEntity(categoryId)))
                     } catch (e: Exception) {
-                        Log.e("RecipesRepository", "Error loading recipe $recipeId", e)
+                        Log.e("RecipesRepository", "Ошибка загрузки рецепта $recipeId", e)
                     }
                 }
             }
@@ -77,6 +80,19 @@ class RecipesRepositoryImpl(
     override fun getRecipesByIds(ids: List<Int>): Flow<List<RecipeDto>> {
         return recipeDao.getRecipesByIds(ids).map { entities ->
             entities.map { it.toDto() }
+        }.onStart {
+            ioScope.launch {
+                ids.forEach { recipeId ->
+                    try {
+                        val recipe = apiService.getRecipe(recipeId)
+                        val existing = recipeDao.getRecipeById(recipeId).first()
+                        val categoryId = existing?.categoryId ?: 0
+                        recipeDao.insertAllRecipes(listOf(recipe.toEntity(categoryId)))
+                    } catch (e: Exception) {
+                        Log.e("RecipesRepository", "Ошибка загрузки рецепта по id $recipeId", e)
+                    }
+                }
+            }
         }
     }
 }

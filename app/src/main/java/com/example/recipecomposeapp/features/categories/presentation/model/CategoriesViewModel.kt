@@ -5,14 +5,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.data.model.toUiModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CategoriesViewModel(
+@HiltViewModel
+class CategoriesViewModel @Inject constructor(
     private val repository: RecipesRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CategoriesUiState())
@@ -27,7 +30,7 @@ class CategoriesViewModel(
             _uiState.update { it.copy(isLoading = true) }
             repository.getCategories()
                 .catch { e ->
-                    Log.e("CategoriesViewModel", "Error loading categories", e)
+                    Log.e("CategoriesViewModel", "Ошибка загрузки категорий", e)
                     _uiState.update { it.copy(isLoading = false) }
                 }
                 .collect { categoriesDto ->
