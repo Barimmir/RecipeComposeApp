@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.data.model.toUiModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,9 +15,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
+import javax.inject.Inject
 
-class RecipesViewModel(
-    private val savedStateHandle: SavedStateHandle,
+@HiltViewModel
+class RecipesViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val repository: RecipesRepository,
 ) : ViewModel() {
 
@@ -26,7 +29,7 @@ class RecipesViewModel(
     private val categoryTitle: String = run {
         try {
             URLDecoder.decode(rawCategoryTitle, "UTF-8")
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Uri.decode(rawCategoryTitle) ?: rawCategoryTitle
         }
     }
@@ -34,7 +37,7 @@ class RecipesViewModel(
     private val categoryImageUrl: String = run {
         try {
             URLDecoder.decode(rawCategoryImageUrl, "UTF-8")
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Uri.decode(rawCategoryImageUrl) ?: rawCategoryImageUrl
         }
     }
@@ -56,7 +59,7 @@ class RecipesViewModel(
             _uiState.update { it.copy(isLoading = true) }
             repository.getRecipesByCategory(categoryId)
                 .catch { e ->
-                    Log.e("RecipesViewModel", "Error loading recipes", e)
+                    Log.e("RecipesViewModel", "Ошибка загрузки рецептов", e)
                     _uiState.update { it.copy(isLoading = false) }
                 }
                 .collect { recipesDto ->
@@ -73,9 +76,5 @@ class RecipesViewModel(
                 }
             }
         }
-    }
-
-    fun refresh() {
-        loadRecipes()
     }
 }

@@ -13,27 +13,24 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.recipecomposeapp.app.di.CategoriesViewModelFactory
-import com.example.recipecomposeapp.app.di.RecipeApplication
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
+import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesViewModel
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
 
 
 @Composable
 fun CategoriesScreen(
+    viewModel: CategoriesViewModel,
     modifier: Modifier = Modifier,
     onCategoryClick: (Int, String, String) -> Unit
 ) {
-    val appContainer = (LocalContext.current.applicationContext as RecipeApplication).appContainer
-    val viewModel = remember { CategoriesViewModelFactory(appContainer.recipesRepository).create() }
     val categories by viewModel.uiState.collectAsStateWithLifecycle()
     Column(
         modifier = modifier
@@ -85,6 +82,7 @@ fun CategoriesScreen(
 fun CategoriesScreenPreview() {
     RecipeComposeAppTheme {
         CategoriesScreen(
+            viewModel = hiltViewModel(),
             modifier = Modifier,
             onCategoryClick = { _, _, _ -> }
         )

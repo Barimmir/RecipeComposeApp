@@ -8,25 +8,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.recipecomposeapp.app.di.RecipeApplication
-import com.example.recipecomposeapp.data.model.FavoritePrefsManager
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private var deepLinkIntent by mutableStateOf<Intent?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val appContainer = (application as RecipeApplication).appContainer
-        
-        FavoritePrefsManager.init(this)
+
         intent?.data?.let {
             deepLinkIntent = intent
         }
         enableEdgeToEdge()
         setContent {
             RecipesApp(
-                deepLinkIntent = deepLinkIntent,
-                appContainer = appContainer
+                deepLinkIntent = deepLinkIntent
             )
         }
     }
