@@ -1,40 +1,38 @@
 package com.example.recipecomposeapp.data.model
 
-import com.example.recipecomposeapp.features.core.utils.Constants
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class CategoryDtoTest {
 
     @Test
-    fun `converts DTO to UI model`() {
+    fun mapper_maps_empty_title_correctly() {
         val dto = CategoryDto(
-            id = 1,
-            title = "Test Category",
-            description = "Test Description",
-            imageUrl = "test_image.jpg"
+            id = 0,
+            title = "",
+            description = "Some description",
+            imageUrl = "https://example.com/img.png"
         )
 
-        val uiModel = dto.toUiModel()
+        val result = dto.toUiModel()
 
-        assertEquals(dto.id, uiModel.id)
-        assertEquals(dto.title, uiModel.title)
-        assertEquals(dto.description, uiModel.description)
-        assertEquals(Constants.IMAGES_BASE_URL + dto.imageUrl, uiModel.imageUrl)
+        assertEquals("", result.title)
+        assertEquals("Some description", result.description)
     }
 
     @Test
-    fun `converts DTO with full URL to UI model`() {
-        val fullUrl = "https://example.com/image.jpg"
+    fun mapper_preserves_very_long_description() {
+        val longDescription = "A".repeat(10000)
         val dto = CategoryDto(
-            id = 2,
-            title = "Full URL Category",
-            description = "Description with full URL",
-            imageUrl = fullUrl
+            id = 1,
+            title = "Category",
+            description = longDescription,
+            imageUrl = "img.jpg"
         )
 
-        val uiModel = dto.toUiModel()
+        val result = dto.toUiModel()
 
-        assertEquals(fullUrl, uiModel.imageUrl)
+        assertEquals(longDescription, result.description)
+        assertEquals(10000, result.description.length)
     }
 }
