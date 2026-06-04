@@ -54,7 +54,7 @@ fun CategoryItem(
                 contentScale = ContentScale.Crop
             )
             Text(
-                text = title,
+                text = title.uppercase(),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,

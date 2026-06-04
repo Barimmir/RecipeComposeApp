@@ -2,6 +2,7 @@ package com.example.recipecomposeapp.features.categories.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,19 +11,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.recipecomposeapp.features.core.utils.Dimens
 import com.example.recipecomposeapp.R
+import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesUiState
 import com.example.recipecomposeapp.features.categories.presentation.model.CategoriesViewModel
-import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
+import com.example.recipecomposeapp.features.core.utils.Dimens
+import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 
 
 @Composable
@@ -47,31 +53,75 @@ fun CategoriesScreen(
             showFavoriteButton = false,
             onFavoriteClick = {}
         )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+        CategoriesContent(
+            uiState = categories,
+            onCategoryClick = { id ->
+                categories.categories.find { it.id == id }?.let { cat ->
+                    onCategoryClick(cat.id, cat.title, cat.imageUrl)
+                }
+            },
             modifier = Modifier
                 .weight(Dimens.WEIGHT_ONE_F)
                 .fillMaxWidth()
-                .padding(Dimens.EIGHT_DP),
-            contentPadding = PaddingValues(Dimens.EIGHT_DP),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP),
-            verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
-        ) {
-            items(categories.categories, key = { it.id }) { categories ->
-                CategoryItem(
-                    id = categories.id,
-                    title = categories.title,
-                    descriptionCategory = categories.description,
-                    imageUrl = categories.imageUrl,
-                    onClick = {
-                        onCategoryClick(
-                            categories.id,
-                            categories.title,
-                            categories.imageUrl
+        )
+    }
+}
+
+@Composable
+fun CategoriesContent(
+    uiState: CategoriesUiState,
+    onCategoryClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
+        when {
+            uiState.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.testTag("loading_indicator")
+                    )
+                }
+            }
+            uiState.error != null -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = uiState.error,
+                        modifier = Modifier.testTag("error_message")
+                    )
+                }
+            }
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .weight(Dimens.WEIGHT_ONE_F)
+                        .fillMaxWidth()
+                        .padding(Dimens.EIGHT_DP),
+                    contentPadding = PaddingValues(Dimens.EIGHT_DP),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
+                ) {
+                    items(uiState.categories, key = { it.id }) { category ->
+                        CategoryItem(
+                            id = category.id,
+                            title = category.title,
+                            descriptionCategory = category.description,
+                            imageUrl = category.imageUrl,
+                            onClick = { onCategoryClick(category.id) },
+                            modifier = Modifier.fillMaxWidth()
                         )
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    }
+                }
             }
         }
     }

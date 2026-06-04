@@ -40,7 +40,7 @@ fun RecipeItem(
                 contentScale = ContentScale.Crop
             )
             Text(
-                text = recipe.title,
+                text = recipe.title.uppercase(),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(
