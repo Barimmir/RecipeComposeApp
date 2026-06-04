@@ -60,7 +60,7 @@ class RecipesViewModel @Inject constructor(
             repository.getRecipesByCategory(categoryId)
                 .catch { e ->
                     Log.e("RecipesViewModel", "Ошибка загрузки рецептов", e)
-                    _uiState.update { it.copy(isLoading = false) }
+                    _uiState.update { it.copy(isLoading = false, error = e.message ?: "Unknown error") }
                 }
                 .collect { recipesDto ->
                 val recipesList = recipesDto.map { dto ->

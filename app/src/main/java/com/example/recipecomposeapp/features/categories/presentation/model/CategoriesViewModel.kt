@@ -31,7 +31,7 @@ class CategoriesViewModel @Inject constructor(
             repository.getCategories()
                 .catch { e ->
                     Log.e("CategoriesViewModel", "Ошибка загрузки категорий", e)
-                    _uiState.update { it.copy(isLoading = false) }
+                    _uiState.update { it.copy(isLoading = false, error = e.message ?: "Unknown error") }
                 }
                 .collect { categoriesDto ->
                 val categoriesList = categoriesDto.map { dto ->
