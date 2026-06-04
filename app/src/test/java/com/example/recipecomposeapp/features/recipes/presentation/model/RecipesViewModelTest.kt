@@ -4,13 +4,14 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.example.recipecomposeapp.data.model.repository.RecipesRepository
 import com.example.recipecomposeapp.fixtures.RecipeTestFixtures
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -25,7 +26,7 @@ import java.io.IOException
 class RecipesViewModelTest {
 
     private val repository: RecipesRepository = mockk()
-    private val testDispatcher = StandardTestDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
@@ -35,6 +36,7 @@ class RecipesViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        clearAllMocks()
     }
 
     private fun createViewModel(
@@ -52,7 +54,6 @@ class RecipesViewModelTest {
         every { repository.getRecipesByCategory(1) } returns flowOf(recipeDtoList)
 
         val viewModel = createViewModel(savedStateHandle)
-        testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiState.test {
             val state = awaitItem()
@@ -73,7 +74,6 @@ class RecipesViewModelTest {
         every { repository.getRecipesByCategory(1) } returns flowOf(emptyList())
 
         val viewModel = createViewModel(savedStateHandle)
-        testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiState.test {
             val state = awaitItem()
@@ -93,7 +93,6 @@ class RecipesViewModelTest {
         }
 
         val viewModel = createViewModel(savedStateHandle)
-        testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiState.test {
             val state = awaitItem()
