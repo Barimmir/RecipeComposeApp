@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -18,6 +19,7 @@ import com.example.recipecomposeapp.R
 import com.example.recipecomposeapp.features.theme.RecipeComposeAppTheme
 import com.example.recipecomposeapp.features.core.ui.ScreenHeader
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiModel
+import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesUiState
 import com.example.recipecomposeapp.features.recipes.presentation.model.RecipesViewModel
 
 @Composable
@@ -49,40 +51,70 @@ fun RecipesScreen(
             onFavoriteClick = {}
         )
 
-        when {
-            uiState.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
+        RecipesContent(
+            uiState = uiState,
+            onRecipeClick = onRecipeClick,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
 
-            uiState.isEmpty -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Нет рецептов в этой категории")
-                }
+@Composable
+fun RecipesContent(
+    uiState: RecipesUiState,
+    onRecipeClick: (Int, RecipesUiModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when {
+        uiState.isLoading -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.testTag("loading_indicator")
+                )
             }
+        }
 
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(Dimens.SIXTEEN_DP),
-                    verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
-                ) {
-                    items(
-                        items = uiState.recipes,
-                        key = { it.id }
-                    ) { recipe ->
-                        RecipeItem(
-                            recipe = recipe,
-                            onRecipeClick = onRecipeClick
-                        )
-                    }
+        uiState.error != null -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = uiState.error.orEmpty(),
+                    modifier = Modifier.testTag("error_message")
+                )
+            }
+        }
+
+        uiState.isEmpty -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "Нет рецептов в этой категории",
+                    modifier = Modifier.testTag("empty_state")
+                )
+            }
+        }
+
+        else -> {
+            LazyColumn(
+                modifier = modifier.fillMaxSize(),
+                contentPadding = PaddingValues(Dimens.SIXTEEN_DP),
+                verticalArrangement = Arrangement.spacedBy(Dimens.EIGHT_DP)
+            ) {
+                items(
+                    items = uiState.recipes,
+                    key = { it.id }
+                ) { recipe ->
+                    RecipeItem(
+                        recipe = recipe,
+                        onRecipeClick = onRecipeClick
+                    )
                 }
             }
         }
