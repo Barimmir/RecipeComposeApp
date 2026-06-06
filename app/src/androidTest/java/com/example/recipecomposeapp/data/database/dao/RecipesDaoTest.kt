@@ -2,7 +2,7 @@ package com.example.recipecomposeapp.data.database.dao
 
 import android.content.Context
 import androidx.room.Room
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import com.example.recipecomposeapp.data.database.RecipesDatabase
 import com.example.recipecomposeapp.data.database.entity.CategoryEntity
 import com.example.recipecomposeapp.data.database.entity.RecipeEntity
@@ -24,7 +24,7 @@ class RecipesDaoTest {
 
     @Before
     fun setUp() {
-        context = InstrumentationRegistry.getInstrumentation().targetContext
+        context = ApplicationProvider.getApplicationContext<Context>()
         database = Room.inMemoryDatabaseBuilder(context, RecipesDatabase::class.java)
             .allowMainThreadQueries()
             .build()

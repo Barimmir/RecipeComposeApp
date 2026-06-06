@@ -3,7 +3,7 @@ package com.example.recipecomposeapp.data.model
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.core.app.ApplicationProvider
 import app.cash.turbine.test
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -21,7 +21,7 @@ class FavoritesDataStoreTest {
 
     @Before
     fun setUp() {
-        context = InstrumentationRegistry.getInstrumentation().targetContext
+        context = ApplicationProvider.getApplicationContext<Context>()
         manager = FavoriteDataStoreManager(context)
     }
 
