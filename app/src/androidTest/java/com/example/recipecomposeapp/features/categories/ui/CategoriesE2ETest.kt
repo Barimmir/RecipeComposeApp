@@ -3,6 +3,7 @@ package com.example.recipecomposeapp.features.categories.ui
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.recipecomposeapp.features.core.ui.MainActivity
+import com.example.recipecomposeapp.features.recipes.ui.RecipesComposeScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
@@ -33,39 +34,18 @@ class CategoriesE2ETest : TestCase(
 
     @Test
     fun categoriesScreenLoadsContent() = run {
-        step("Wait for categories screen to finish loading") {
+        step("Wait for categories grid to load") {
             ComposeScreen.onComposeScreen<CategoriesComposeScreen>(composeRule) {
-                loadingIndicator { assertIsNotDisplayed() }
-            }
-        }
-        step("Check any state is displayed: content, grid, or error") {
-            ComposeScreen.onComposeScreen<CategoriesComposeScreen>(composeRule) {
-                val hasCategories = try {
-                    categoryItem.assertIsDisplayed()
-                    true
-                } catch (_: AssertionError) {
-                    false
-                }
-                if (!hasCategories) {
-                    val hasError = try {
-                        errorMessage.assertIsDisplayed()
-                        true
-                    } catch (_: AssertionError) {
-                        false
-                    }
-                    if (!hasError) {
-                        categoriesGrid.assertIsDisplayed()
-                    }
-                }
+                categoriesGrid.assertIsDisplayed()
             }
         }
     }
 
     @Test
     fun clickingCategoryOpensRecipesScreen() = run {
-        step("Wait for categories screen to load") {
+        step("Wait for categories grid to load") {
             ComposeScreen.onComposeScreen<CategoriesComposeScreen>(composeRule) {
-                loadingIndicator { assertIsNotDisplayed() }
+                categoriesGrid.assertIsDisplayed()
             }
         }
         step("Attempt clicking first category if available") {
@@ -81,8 +61,10 @@ class CategoriesE2ETest : TestCase(
                 }
             }
         }
-        step("Verify app is still responsive") {
-            ComposeScreen.onComposeScreen<CategoriesComposeScreen>(composeRule) { }
+        step("Verify RecipesScreen is displayed after navigation") {
+            ComposeScreen.onComposeScreen<RecipesComposeScreen>(composeRule) {
+                loadingIndicator.assertIsDisplayed()
+            }
         }
     }
 }
