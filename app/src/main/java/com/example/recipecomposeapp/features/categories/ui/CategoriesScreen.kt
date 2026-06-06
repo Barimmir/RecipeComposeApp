@@ -41,6 +41,7 @@ fun CategoriesScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .testTag("categories_screen")
             .background(color = MaterialTheme.colorScheme.background),
     ) {
         ScreenHeader(
@@ -104,6 +105,7 @@ fun CategoriesContent(
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier
+                        .testTag("categories_grid")
                         .weight(Dimens.WEIGHT_ONE_F)
                         .fillMaxWidth()
                         .padding(Dimens.EIGHT_DP),

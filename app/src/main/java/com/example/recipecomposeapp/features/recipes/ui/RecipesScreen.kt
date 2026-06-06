@@ -33,6 +33,7 @@ fun RecipesScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .testTag("recipes_screen")
             .background(color = MaterialTheme.colorScheme.background)
     ) {
         val imagePainter = rememberAsyncImagePainter(
@@ -83,7 +84,7 @@ fun RecipesContent(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = uiState.error.orEmpty(),
+                    text = uiState.error,
                     modifier = Modifier.testTag("error_message")
                 )
             }

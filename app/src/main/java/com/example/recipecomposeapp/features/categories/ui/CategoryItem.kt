@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.recipecomposeapp.features.core.ui.RecipeImage
@@ -33,6 +34,7 @@ fun CategoryItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .testTag("category_item")
             .heightIn(Dimens.TWO_HUNDRED_TWENTY_DP)
             .clickable { onClick(id) }
             .background(MaterialTheme.colorScheme.background),
